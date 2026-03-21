@@ -1,30 +1,35 @@
 import type {
   Appointment as PrismaAppointment,
   Doctor as PrismaDoctor,
+  DoctorNote as PrismaDoctorNote,
   Insurance as PrismaInsurance,
   KnowledgeChunk as PrismaKnowledgeChunk,
   MedicalHistory as PrismaMedicalHistory,
+  MedicalHistoryAttachment as PrismaMedicalHistoryAttachment,
   Medication as PrismaMedication,
+  MedicationAdministration as PrismaMedicationAdministration,
   Patient as PrismaPatient,
+  PatientDoctor as PrismaPatientDoctor,
   Role,
+  StikoScheduleRule as PrismaStikoScheduleRule,
   User as PrismaUser,
   Vaccination as PrismaVaccination,
 } from "@prisma/client";
 
-export type { Role } from "@prisma/client";
+export type {
+  InsuranceType,
+  Role,
+  VaccinationStatus,
+  VisitType,
+} from "@prisma/client";
 
-/** Application user aligned with Prisma `User`; extend for API/session-specific fields. */
 export interface User extends PrismaUser {}
 
-/** Patient profile; Prisma model plus optional convenience flags for UI layers. */
 export interface Patient extends PrismaPatient {
-  /** True when the patient has at least one active insurance record (computed in services). */
   hasActiveInsurance?: boolean;
 }
 
-/** Licensed clinician profile. */
 export interface Doctor extends PrismaDoctor {
-  /** Display name resolved from linked `User` when joined in queries. */
   displayName?: string;
 }
 
@@ -32,15 +37,23 @@ export interface Appointment extends PrismaAppointment {}
 
 export interface MedicalHistory extends PrismaMedicalHistory {}
 
+export interface MedicalHistoryAttachment extends PrismaMedicalHistoryAttachment {}
+
 export interface Vaccination extends PrismaVaccination {}
+
+export interface StikoScheduleRule extends PrismaStikoScheduleRule {}
 
 export interface Medication extends PrismaMedication {}
 
+export interface MedicationAdministration extends PrismaMedicationAdministration {}
+
 export interface Insurance extends PrismaInsurance {}
 
-/** Vector/RAG chunk stored for retrieval-augmented workflows. */
+export interface PatientDoctor extends PrismaPatientDoctor {}
+
+export interface DoctorNote extends PrismaDoctorNote {}
+
 export interface KnowledgeChunk extends PrismaKnowledgeChunk {
-  /** Normalized embedding as number[] when deserialized from storage. */
   embeddingVector?: number[];
 }
 
@@ -50,10 +63,25 @@ export type UserWithRelations = User & {
 };
 
 export type PatientWithMedical = Patient & {
-  medicalHistories?: MedicalHistory[];
-  vaccinations?: Vaccination[];
-  medications?: Medication[];
+  user?: User;
+  medicalHistories?: MedicalHistoryWithDoctor[];
+  vaccinations?: VaccinationWithDoctor[];
+  medications?: MedicationWithDoctor[];
   insurances?: Insurance[];
+};
+
+export type MedicalHistoryWithDoctor = MedicalHistory & {
+  attendingDoctor?: (Doctor & { user?: User }) | null;
+  attachments?: MedicalHistoryAttachment[];
+};
+
+export type VaccinationWithDoctor = Vaccination & {
+  administeringDoctor?: (Doctor & { user?: User }) | null;
+};
+
+export type MedicationWithDoctor = Medication & {
+  prescribedBy?: (Doctor & { user?: User }) | null;
+  administrations?: MedicationAdministration[];
 };
 
 export type AppointmentWithParticipants = Appointment & {

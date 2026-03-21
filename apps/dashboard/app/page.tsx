@@ -1,33 +1,54 @@
-import { Badge, Card, CardContent, CardHeader, CardTitle, Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@mediconnect/ui";
+import { redirect } from "next/navigation";
 
-export default function DashboardPage() {
-  return (
-    <main className="container space-y-6 py-12">
-      <div className="flex items-center gap-2">
-        <h1 className="text-2xl font-semibold">Klinisches Dashboard</h1>
-        <Badge>E2</Badge>
+import { getCurrentUser } from "@mediconnect/auth";
+import { prisma } from "@mediconnect/db";
+
+import { DashboardShell } from "./components/dashboard-shell";
+import { PatientList } from "./components/patient-list";
+import { Header } from "./components/header";
+import { PageTitle } from "./components/page-title";
+
+export default async function DashboardPage() {
+  const user = await getCurrentUser();
+
+  if (!user) {
+    redirect("/login");
+  }
+
+  if (user.role === "PATIENT") {
+    const patient = await prisma.patient.findUnique({
+      where: { userId: user.id },
+    });
+
+    if (!patient) {
+      return (
+        <div>
+          <Header />
+          <main className="container py-12">
+            <p className="text-muted-foreground">No patient profile found.</p>
+          </main>
+        </div>
+      );
+    }
+
+    return (
+      <div>
+        <Header />
+        <main className="container space-y-6 py-8">
+          <PageTitle type="patient" />
+          <DashboardShell patientId={patient.id} role="PATIENT" />
+        </main>
       </div>
-      <Card>
-        <CardHeader>
-          <CardTitle>Übersicht</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Kennzahl</TableHead>
-                <TableHead>Status</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              <TableRow>
-                <TableCell>Beispielmetrik</TableCell>
-                <TableCell>—</TableCell>
-              </TableRow>
-            </TableBody>
-          </Table>
-        </CardContent>
-      </Card>
-    </main>
+    );
+  }
+
+  return (
+    <div>
+      <Header />
+      <main className="container space-y-6 py-8">
+        <PageTitle type="clinical" />
+        <PatientList />
+      </main>
+    </div>
   );
 }
