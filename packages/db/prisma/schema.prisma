@@ -7,12 +7,34 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+// ─── Enums ─────────────────────────────────────────
+
 enum Role {
   PATIENT
   DOCTOR
+  NURSE
   ADMIN
-  STAFF
 }
+
+enum VisitType {
+  DIAGNOSIS
+  HOSPITAL_VISIT
+  SURGERY
+  OTHER
+}
+
+enum VaccinationStatus {
+  UP_TO_DATE
+  DUE_SOON
+  OVERDUE
+}
+
+enum InsuranceType {
+  GKV
+  PKV
+}
+
+// ─── Auth / Core ───────────────────────────────────
 
 model User {
   id            String    @id @default(cuid())
@@ -25,11 +47,11 @@ model User {
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
 
-  accounts Account[]
-  sessions Session[]
-
-  patient Patient?
-  doctor  Doctor?
+  accounts                  Account[]
+  sessions                  Session[]
+  patient                   Patient?
+  doctor                    Doctor?
+  medicationAdministrations MedicationAdministration[]
 }
 
 model Account {
@@ -67,35 +89,65 @@ model VerificationToken {
   @@unique([identifier, token])
 }
 
+// ─── Clinical ──────────────────────────────────────
+
 model Patient {
-  id        String   @id @default(cuid())
-  userId    String   @unique
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  dob       DateTime?
-  phone     String?
+  id                    String   @id @default(cuid())
+  userId                String   @unique
+  user                  User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  dob                   DateTime?
+  phone                 String?
+  gender                String?
+  bloodType             String?
+  allergies             String[] @default([])
+  preferredLanguage     String?  @default("de")
+  emergencyContactName  String?
+  emergencyContactPhone String?
 
   medicalHistories MedicalHistory[]
   vaccinations     Vaccination[]
-  medications        Medication[]
-  insurances         Insurance[]
-  appointments       Appointment[]    @relation("PatientAppointments")
+  medications      Medication[]
+  insurances       Insurance[]
+  appointments     Appointment[]    @relation("PatientAppointments")
+  assignedDoctors  PatientDoctor[]
+  doctorNotes      DoctorNote[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
 
 model Doctor {
-  id             String   @id @default(cuid())
-  userId         String   @unique
-  user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  licenseNumber  String?
-  specialty      String?
+  id            String   @id @default(cuid())
+  userId        String   @unique
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  licenseNumber String?
+  specialty     String?
+  languages     String[] @default([])
 
-  appointments Appointment[] @relation("DoctorAppointments")
+  appointments              Appointment[]    @relation("DoctorAppointments")
+  attendedHistories         MedicalHistory[]
+  administeredVaccinations  Vaccination[]
+  prescribedMedications     Medication[]
+  assignedPatients          PatientDoctor[]
+  doctorNotes               DoctorNote[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
+
+model PatientDoctor {
+  id        String  @id @default(cuid())
+  patientId String
+  doctorId  String
+  isPrimary Boolean @default(false)
+
+  patient Patient @relation(fields: [patientId], references: [id], onDelete: Cascade)
+  doctor  Doctor  @relation(fields: [doctorId], references: [id], onDelete: Cascade)
+
+  @@unique([patientId, doctorId])
+}
+
+// ─── Appointments ──────────────────────────────────
 
 model Appointment {
   id          String   @id @default(cuid())
@@ -114,58 +166,139 @@ model Appointment {
   updatedAt DateTime @updatedAt
 }
 
+// ─── Medical History ───────────────────────────────
+
 model MedicalHistory {
-  id          String   @id @default(cuid())
-  patientId   String
-  patient     Patient  @relation(fields: [patientId], references: [id], onDelete: Cascade)
-  condition   String
-  icd10Code   String?
-  diagnosedAt DateTime?
-  notes       String?  @db.Text
+  id                String    @id @default(cuid())
+  patientId         String
+  patient           Patient   @relation(fields: [patientId], references: [id], onDelete: Cascade)
+  condition         String
+  icd10Code         String?
+  icd10Name         String?
+  visitType         VisitType @default(DIAGNOSIS)
+  attendingDoctorId String?
+  attendingDoctor   Doctor?   @relation(fields: [attendingDoctorId], references: [id])
+  diagnosedAt       DateTime?
+  notes             String?   @db.Text
+
+  attachments MedicalHistoryAttachment[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
+
+model MedicalHistoryAttachment {
+  id               String         @id @default(cuid())
+  medicalHistoryId String
+  medicalHistory   MedicalHistory @relation(fields: [medicalHistoryId], references: [id], onDelete: Cascade)
+  storageUrl       String
+  fileName         String
+  mimeType         String?
+
+  createdAt DateTime @default(now())
+}
+
+// ─── Vaccinations ──────────────────────────────────
 
 model Vaccination {
-  id         String    @id @default(cuid())
-  patientId  String
-  patient    Patient   @relation(fields: [patientId], references: [id], onDelete: Cascade)
-  name       String
-  administeredAt DateTime?
-  batch      String?
+  id                    String            @id @default(cuid())
+  patientId             String
+  patient               Patient           @relation(fields: [patientId], references: [id], onDelete: Cascade)
+  name                  String
+  administeredAt        DateTime?
+  batch                 String?
+  nextDueDate           DateTime?
+  status                VaccinationStatus @default(UP_TO_DATE)
+  administeringDoctorId String?
+  administeringDoctor   Doctor?           @relation(fields: [administeringDoctorId], references: [id])
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
+
+model StikoScheduleRule {
+  id            String  @id @default(cuid())
+  vaccineKey    String  @unique
+  vaccineName   String
+  ageFromMonths Int?
+  ageToMonths   Int?
+  dosesRequired Int     @default(1)
+  intervalDays  Int?
+  notes         String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// ─── Medications ───────────────────────────────────
 
 model Medication {
-  id         String   @id @default(cuid())
-  patientId  String
-  patient    Patient  @relation(fields: [patientId], references: [id], onDelete: Cascade)
-  name       String
-  dosage     String?
-  frequency  String?
-  prescribedBy String?
-  startDate  DateTime?
-  endDate    DateTime?
+  id             String   @id @default(cuid())
+  patientId      String
+  patient        Patient  @relation(fields: [patientId], references: [id], onDelete: Cascade)
+  name           String
+  dosage         String?
+  frequency      String?
+  route          String?
+  prescribedById String?
+  prescribedBy   Doctor?  @relation(fields: [prescribedById], references: [id])
+  startDate      DateTime?
+  endDate        DateTime?
+  isActive       Boolean  @default(true)
+
+  administrations MedicationAdministration[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
+
+model MedicationAdministration {
+  id               String     @id @default(cuid())
+  medicationId     String
+  medication       Medication @relation(fields: [medicationId], references: [id], onDelete: Cascade)
+  administeredById String
+  administeredBy   User       @relation(fields: [administeredById], references: [id])
+  administeredAt   DateTime   @default(now())
+  confirmed        Boolean    @default(false)
+  slotLabel        String?
+
+  createdAt DateTime @default(now())
+}
+
+// ─── Insurance ─────────────────────────────────────
 
 model Insurance {
-  id           String   @id @default(cuid())
-  patientId    String
-  patient      Patient  @relation(fields: [patientId], references: [id], onDelete: Cascade)
-  providerName String
-  policyNumber String?
-  validFrom    DateTime?
-  validTo      DateTime?
+  id                String        @id @default(cuid())
+  patientId         String
+  patient           Patient       @relation(fields: [patientId], references: [id], onDelete: Cascade)
+  providerName      String
+  policyNumber      String?
+  type              InsuranceType?
+  coverageTier      String?
+  coPayAmount       Float?
+  insurerWebsiteUrl String?
+  validFrom         DateTime?
+  validTo           DateTime?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
+
+// ─── Doctor Notes (private, never visible to patients/nurses) ──
+
+model DoctorNote {
+  id        String  @id @default(cuid())
+  doctorId  String
+  doctor    Doctor  @relation(fields: [doctorId], references: [id], onDelete: Cascade)
+  patientId String
+  patient   Patient @relation(fields: [patientId], references: [id], onDelete: Cascade)
+  content   String  @db.Text
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// ─── Knowledge Base ────────────────────────────────
 
 model KnowledgeChunk {
   id        String   @id @default(cuid())
