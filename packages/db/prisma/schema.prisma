@@ -34,6 +34,15 @@ enum InsuranceType {
   PKV
 }
 
+enum AppointmentStatus {
+  SCHEDULED
+  WAITING
+  IN_PROGRESS
+  COMPLETED
+  NO_SHOW
+  CANCELLED
+}
+
 // ─── Auth / Core ───────────────────────────────────
 
 model User {
@@ -130,9 +139,43 @@ model Doctor {
   prescribedMedications     Medication[]
   assignedPatients          PatientDoctor[]
   doctorNotes               DoctorNote[]
+  availabilityRules         DoctorAvailabilityRule[]
+  availabilityExceptions    AvailabilityException[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+model DoctorAvailabilityRule {
+  id                  String @id @default(cuid())
+  doctorId            String
+  doctor              Doctor @relation(fields: [doctorId], references: [id], onDelete: Cascade)
+  /// 0 = Sunday … 6 = Saturday (same as JS Date.getDay())
+  weekday             Int
+  /// 15, 30, or 45
+  slotDurationMinutes Int
+  /// "HH:mm" in doctor timezone
+  startTime           String
+  endTime             String
+  timezone            String @default("Europe/Berlin")
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([doctorId])
+}
+
+model AvailabilityException {
+  id       String   @id @default(cuid())
+  doctorId String
+  doctor   Doctor   @relation(fields: [doctorId], references: [id], onDelete: Cascade)
+  date     DateTime @db.Date
+  reason   String?
+
+  createdAt DateTime @default(now())
+
+  @@unique([doctorId, date])
+  @@index([doctorId])
 }
 
 model PatientDoctor {
@@ -150,20 +193,28 @@ model PatientDoctor {
 // ─── Appointments ──────────────────────────────────
 
 model Appointment {
-  id          String   @id @default(cuid())
-  patientId   String
-  doctorId    String?
-  startsAt    DateTime
-  endsAt      DateTime
-  status      String   @default("SCHEDULED")
-  notes       String?  @db.Text
-  queueTicket String?
+  id        String            @id @default(cuid())
+  patientId String
+  doctorId  String
+  startsAt  DateTime
+  endsAt    DateTime
+  status    AppointmentStatus @default(SCHEDULED)
+  notes     String?           @db.Text
+
+  videoRoomUrl                 String?
+  googleCalendarEventIdDoctor  String?
+  googleCalendarEventIdPatient String?
+  reminderSentAt               DateTime?
 
   patient Patient @relation("PatientAppointments", fields: [patientId], references: [id], onDelete: Cascade)
-  doctor  Doctor? @relation("DoctorAppointments", fields: [doctorId], references: [id])
+  doctor  Doctor  @relation("DoctorAppointments", fields: [doctorId], references: [id])
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  @@unique([doctorId, startsAt])
+  @@index([doctorId, startsAt])
+  @@index([patientId, startsAt])
 }
 
 // ─── Medical History ───────────────────────────────

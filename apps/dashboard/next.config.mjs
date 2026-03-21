@@ -7,6 +7,7 @@ const nextConfig = {
     "@mediconnect/auth",
     "@mediconnect/db",
     "@mediconnect/knowledge-base",
+    "@mediconnect/i18n",
   ],
 };
 
