@@ -1,5 +1,6 @@
 import { hash } from "bcryptjs";
 import {
+  AppointmentStatus,
   InsuranceType,
   PrismaClient,
   Role,
@@ -100,7 +101,18 @@ async function main() {
     },
   });
 
-  // ─── Appointment ──────────────────────────────────
+  // ─── Doctor availability (E3) ─────────────────────
+  await prisma.doctorAvailabilityRule.deleteMany({ where: { doctorId: doctor.id } });
+  await prisma.doctorAvailabilityRule.createMany({
+    data: [
+      { doctorId: doctor.id, weekday: 1, slotDurationMinutes: 30, startTime: "09:00", endTime: "12:00" },
+      { doctorId: doctor.id, weekday: 2, slotDurationMinutes: 30, startTime: "09:00", endTime: "12:00" },
+      { doctorId: doctor.id, weekday: 3, slotDurationMinutes: 30, startTime: "14:00", endTime: "17:00" },
+      { doctorId: doctor.id, weekday: 4, slotDurationMinutes: 15, startTime: "10:00", endTime: "11:00" },
+    ],
+  });
+
+  // ─── Appointment (sample) ───────────────────────
   const existingAppt = await prisma.appointment.findFirst({
     where: { patientId: patient.id, doctorId: doctor.id },
   });
@@ -111,7 +123,8 @@ async function main() {
         doctorId: doctor.id,
         startsAt: new Date(Date.now() + 86_400_000),
         endsAt: new Date(Date.now() + 86_400_000 + 3_600_000),
-        status: "SCHEDULED",
+        status: AppointmentStatus.SCHEDULED,
+        videoRoomUrl: "https://video.mediconnect.local/room/seed-demo",
       },
     });
   }

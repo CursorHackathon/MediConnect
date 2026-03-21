@@ -5,11 +5,11 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button, Card, CardContent, CardHeader, CardTitle, Input } from "@mediconnect/ui";
 
-import { useTranslation } from "@/app/lib/i18n";
+import { LanguageToggle, useTranslation } from "@/app/lib/i18n";
 
 export default function LoginPage() {
   const router = useRouter();
-  const { locale, setLocale, t } = useTranslation();
+  const { t } = useTranslation();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -42,14 +42,7 @@ export default function LoginPage() {
         <CardHeader>
           <div className="flex items-center justify-between">
             <CardTitle className="text-xl">{t("login.title")}</CardTitle>
-            <button
-              type="button"
-              onClick={() => setLocale(locale === "de" ? "en" : "de")}
-              className="rounded-md border px-2 py-1 text-xs font-medium hover:bg-accent"
-              aria-label="Toggle language"
-            >
-              {locale === "de" ? "DE" : "EN"}
-            </button>
+            <LanguageToggle />
           </div>
           <p className="text-sm text-muted-foreground">
             {t("login.subtitle")}

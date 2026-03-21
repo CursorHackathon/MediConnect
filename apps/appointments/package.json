@@ -11,14 +11,23 @@
     "test": "vitest run --passWithNoTests"
   },
   "dependencies": {
+    "@mediconnect/auth": "workspace:*",
+    "@mediconnect/db": "workspace:*",
+    "@mediconnect/i18n": "workspace:*",
     "@mediconnect/types": "workspace:*",
     "@mediconnect/ui": "workspace:*",
+    "@tanstack/react-query": "^5.62.8",
+    "bcryptjs": "^2.4.3",
+    "luxon": "^3.5.0",
     "next": "^14.2.21",
+    "next-auth": "^4.24.11",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "tailwindcss-animate": "^1.0.7"
   },
   "devDependencies": {
+    "@types/bcryptjs": "^2.4.6",
+    "@types/luxon": "^3.4.2",
     "@types/node": "^22.10.2",
     "@types/react": "^18.3.12",
     "@types/react-dom": "^18.3.1",

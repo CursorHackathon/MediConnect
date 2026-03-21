@@ -1,21 +1,18 @@
-import { Badge, Card, CardContent, CardHeader, CardTitle, Skeleton } from "@mediconnect/ui";
+import { redirect } from "next/navigation";
 
-export default function AppointmentsPage() {
-  return (
-    <main className="container space-y-6 py-12">
-      <div className="flex items-center gap-2">
-        <h1 className="text-2xl font-semibold">Termine & Warteschlange</h1>
-        <Badge variant="secondary">E3</Badge>
-      </div>
-      <Card>
-        <CardHeader>
-          <CardTitle>Warteschlange</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-2">
-          <Skeleton className="h-10 w-full" />
-          <Skeleton className="h-10 w-full" />
-        </CardContent>
-      </Card>
-    </main>
-  );
+import { getCurrentUser } from "@mediconnect/auth";
+
+import { HomeNoRole } from "./components/home-no-role";
+
+export default async function HomePage() {
+  const user = await getCurrentUser();
+  if (!user) redirect("/login");
+
+  if (user.role === "PATIENT") {
+    redirect("/patient/book");
+  }
+  if (user.role === "DOCTOR" || user.role === "ADMIN") {
+    redirect("/doctor/queue");
+  }
+  return <HomeNoRole />;
 }
