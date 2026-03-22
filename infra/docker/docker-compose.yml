@@ -1,0 +1,98 @@
+# MediConnect local infrastructure (Postgres + pgvector, Redis, MinIO, Mailhog)
+#
+# Environment file for this stack (path is relative to this compose file):
+#   .env  — optional; create with: cp .env.example .env
+#   Only infra-related variables should live here (ports, Postgres, MinIO).
+#   Do NOT point env_file at the monorepo root .env: that would inject app secrets
+#   (API keys, NEXTAUTH_*, etc.) into every container.
+#   To reuse values from the repo root, symlink:  (from infra/docker)  ../../.env -> .env
+#   or duplicate just the POSTGRES_* / MINIO_* / *_PORT lines.
+#
+# ${VAR} substitution in ports/environment uses the same folder: Compose loads
+# infra/docker/.env automatically when the project directory is this file’s directory.
+#
+# Usage from repo root (no --env-file needed if infra/docker/.env exists):
+#   docker compose -f infra/docker/docker-compose.yml up -d
+#
+# Usage from infra/docker:
+#   docker compose up -d
+#
+# DATABASE_URL for apps (defaults):
+#   postgresql://mediconnect:mediconnect@localhost:5432/mediconnect
+#
+# MinIO console: http://localhost:9001  ·  Mailhog UI: http://localhost:8025
+
+name: mediconnect-infra
+
+# Pass variables from infra/docker/.env into containers (optional file).
+x-env-files: &env-files
+  env_file:
+    - path: .env
+      required: false
+
+services:
+  postgres:
+    <<: *env-files
+    image: pgvector/pgvector:pg15
+    container_name: mediconnect-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-mediconnect}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-mediconnect}
+      POSTGRES_DB: ${POSTGRES_DB:-mediconnect}
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./init-db:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-mediconnect} -d ${POSTGRES_DB:-mediconnect}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+
+  redis:
+    <<: *env-files
+    image: redis:7-alpine
+    container_name: mediconnect-redis
+    restart: unless-stopped
+    ports:
+      - "${REDIS_PORT:-6379}:6379"
+    volumes:
+      - redis_data:/data
+    command: redis-server --appendonly yes
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+  minio:
+    <<: *env-files
+    image: minio/minio:latest
+    container_name: mediconnect-minio
+    restart: unless-stopped
+    command: server /data --console-address ":9001"
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER:-minioadmin}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD:-minioadmin}
+    ports:
+      - "${MINIO_API_PORT:-9000}:9000"
+      - "${MINIO_CONSOLE_PORT:-9001}:9001"
+    volumes:
+      - minio_data:/data
+
+  mailhog:
+    <<: *env-files
+    image: mailhog/mailhog:latest
+    container_name: mediconnect-mailhog
+    restart: unless-stopped
+    ports:
+      - "${MAILHOG_SMTP_PORT:-1025}:1025"
+      - "${MAILHOG_UI_PORT:-8025}:8025"
+
+volumes:
+  postgres_data:
+  redis_data:
+  minio_data:

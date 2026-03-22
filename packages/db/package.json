@@ -13,23 +13,22 @@
     "lint": "cross-env DATABASE_URL=postgresql://localhost:5432/mediconnect prisma validate",
     "type-check": "tsc --noEmit -p tsconfig.json",
     "test": "vitest run --passWithNoTests",
-    "db:push": "prisma db push",
-    "db:migrate": "prisma migrate deploy",
-    "db:migrate:dev": "prisma migrate dev",
-    "db:seed": "tsx prisma/seed.ts",
-    "db:studio": "prisma studio"
+    "db:push": "dotenv -e ../../.env -e .env -- prisma db push",
+    "db:migrate": "dotenv -e ../../.env -e .env -- prisma migrate deploy",
+    "db:migrate:dev": "dotenv -e ../../.env -e .env -- prisma migrate dev",
+    "db:seed": "dotenv -e ../../.env -e .env -- tsx prisma/seed.ts",
+    "db:studio": "dotenv -e ../../.env -e .env -- prisma studio"
   },
   "dependencies": {
     "@prisma/client": "^6.1.0"
   },
   "prisma": {
-    "seed": "tsx prisma/seed.ts"
+    "seed": "dotenv -e ../../.env -e .env -- tsx prisma/seed.ts"
   },
   "devDependencies": {
-    "cross-env": "^7.0.3",
     "@types/node": "^22.10.2",
-    "bcryptjs": "^2.4.3",
-    "@types/bcryptjs": "^2.4.6",
+    "cross-env": "^7.0.3",
+    "dotenv-cli": "^11.0.0",
     "prisma": "^6.1.0",
     "tsx": "^4.19.2",
     "typescript": "^5.7.2",

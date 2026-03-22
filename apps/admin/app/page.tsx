@@ -1,12 +1,38 @@
-import { redirect } from "next/navigation";
+import Link from "next/link";
 
 import { getCurrentUser } from "@mediconnect/auth";
-import { Badge, Card, CardContent, CardHeader, CardTitle, Tabs, TabsContent, TabsList, TabsTrigger } from "@mediconnect/ui";
+import {
+  Badge,
+  Button,
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+} from "@mediconnect/ui";
 
 export default async function AdminAppPage() {
   const user = await getCurrentUser();
   if (!user || user.role !== "ADMIN") {
-    redirect("/api/auth/signin");
+    return (
+      <main className="container py-12">
+        <Card className="max-w-lg">
+          <CardHeader>
+            <CardTitle>Admin-Bereich</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-2 text-sm text-muted-foreground">
+            <p>
+              Setzen Sie in der Umgebung <code className="text-xs">SIMULATED_ROLE=ADMIN</code> (und DB-Seed), oder{" "}
+              <code className="text-xs">SIMULATED_USER_ID</code> auf einen Admin-Nutzer.
+            </p>
+            {user ? <p className="text-xs">Aktuell simuliert: {user.email} ({user.role})</p> : null}
+          </CardContent>
+        </Card>
+      </main>
+    );
   }
 
   return (
@@ -20,6 +46,7 @@ export default async function AdminAppPage() {
           <TabsTrigger value="rbac">RBAC</TabsTrigger>
           <TabsTrigger value="users">Nutzerverwaltung</TabsTrigger>
           <TabsTrigger value="meds">Medikamente</TabsTrigger>
+          <TabsTrigger value="kb">Wissensbasis</TabsTrigger>
         </TabsList>
         <TabsContent value="rbac">
           <Card>
@@ -43,6 +70,19 @@ export default async function AdminAppPage() {
               <CardTitle>Medikamente</CardTitle>
             </CardHeader>
             <CardContent className="text-sm text-muted-foreground">Arzneimittelstammdaten (Anbindung DrugBank / intern).</CardContent>
+          </Card>
+        </TabsContent>
+        <TabsContent value="kb">
+          <Card>
+            <CardHeader>
+              <CardTitle>Krankenhaus-Dokumente</CardTitle>
+            </CardHeader>
+            <CardContent className="flex flex-col gap-3 text-sm text-muted-foreground">
+              <p>PDF-Upload und Embeddings folgen in einem späteren Schritt. Jetzt: Text einfügen und chunken.</p>
+              <Button asChild className="w-fit">
+                <Link href="/knowledge">Zur Wissensbasis</Link>
+              </Button>
+            </CardContent>
           </Card>
         </TabsContent>
       </Tabs>

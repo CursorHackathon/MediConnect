@@ -1,25 +1,26 @@
-import { getServerSession } from "next-auth/next";
-
+import type { Role } from "@prisma/client";
 import { prisma } from "@mediconnect/db";
 
-import { authOptions } from "./auth-options";
+import { getSimulatedRoleFromEnv } from "./simulated-role";
 
 export type CurrentUser = NonNullable<Awaited<ReturnType<typeof getCurrentUser>>>;
 
 /**
- * Returns the database user for the active session, including role and optional profiles.
+ * Dev/demo: loads a user from the DB using `SIMULATED_USER_ID` or the first user
+ * with `SIMULATED_ROLE` (default PATIENT). Seed creates admin@, doctor@, patient@ users.
  */
 export async function getCurrentUser() {
-  const session = await getServerSession(authOptions);
-  if (!session?.user?.id) {
-    return null;
+  const userId = process.env.SIMULATED_USER_ID?.trim();
+  if (userId) {
+    return prisma.user.findUnique({
+      where: { id: userId },
+      include: { patient: true, doctor: true },
+    });
   }
 
-  return prisma.user.findUnique({
-    where: { id: session.user.id },
-    include: {
-      patient: true,
-      doctor: true,
-    },
+  const role = getSimulatedRoleFromEnv() as Role;
+  return prisma.user.findFirst({
+    where: { role },
+    include: { patient: true, doctor: true },
   });
 }

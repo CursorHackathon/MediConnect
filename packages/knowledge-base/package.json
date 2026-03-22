@@ -10,14 +10,21 @@
   "scripts": {
     "lint": "tsc --noEmit -p tsconfig.json",
     "type-check": "tsc --noEmit -p tsconfig.json",
-    "test": "vitest run --passWithNoTests"
+    "test": "vitest run --passWithNoTests",
+    "test:hf": "vitest run --passWithNoTests src/embeddings.hf.integration.test.ts",
+    "seed-patient-education": "dotenv -e ../../.env -- tsx src/seed-patient-education-cli.ts"
   },
   "dependencies": {
+    "@huggingface/inference": "^4.13.15",
     "@mediconnect/api-client": "workspace:*",
+    "@mediconnect/db": "workspace:*",
     "@mediconnect/types": "workspace:*"
   },
   "devDependencies": {
     "@types/node": "^22.10.2",
+    "dotenv": "^17.3.1",
+    "dotenv-cli": "^7.4.4",
+    "tsx": "^4.19.2",
     "typescript": "^5.7.2",
     "vitest": "^2.1.8"
   }

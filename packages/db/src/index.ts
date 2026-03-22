@@ -11,3 +11,12 @@ export const prisma =
 if (process.env.NODE_ENV !== "production") globalForPrisma.prisma = prisma;
 
 export * from "@prisma/client";
+export {
+  formatVectorLiteral,
+  KNOWLEDGE_EMBEDDING_DIMENSIONS,
+  listKnowledgeChunkIdsWithoutEmbedding,
+  searchKnowledgeChunksByVector,
+  setKnowledgeChunkEmbeddingVector,
+  type KnowledgeChunkVectorHit,
+  type KnowledgeVectorSearchFilter,
+} from "./knowledge-vector";

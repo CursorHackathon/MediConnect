@@ -7,35 +7,39 @@ export default function HomePage() {
     <main className="container flex min-h-screen flex-col gap-8 py-12">
       <div>
         <h1 className="text-3xl font-semibold tracking-tight">MediConnect</h1>
-        <p className="text-muted-foreground">Telehealth platform shell — rollenbasierter Zugang.</p>
+        <p className="text-muted-foreground">
+          Telehealth platform shell — rollenbasierter Zugang per <code className="text-xs">SIMULATED_ROLE</code> (lokal).
+        </p>
       </div>
       <div className="grid gap-4 md:grid-cols-2">
         <Card>
           <CardHeader>
-            <CardTitle>Anmeldung</CardTitle>
-            <CardDescription>Zugang für Patienten, Ärztinnen und Verwaltung.</CardDescription>
+            <CardTitle>Rollen simulieren</CardTitle>
+            <CardDescription>
+              Setzen Sie in <code className="text-xs">.env</code> z. B.{" "}
+              <code className="text-xs">SIMULATED_ROLE=PATIENT</code>, <code className="text-xs">DOCTOR</code> oder{" "}
+              <code className="text-xs">ADMIN</code> und starten Sie die App neu.
+            </CardDescription>
           </CardHeader>
-          <CardContent className="flex gap-2">
-            <Button asChild>
-              <Link href="/login">Login</Link>
-            </Button>
+          <CardContent className="text-sm text-muted-foreground">
+            Optional: <code className="text-xs">SIMULATED_USER_ID</code> für einen konkreten Nutzer aus der Datenbank.
           </CardContent>
         </Card>
         <Card>
           <CardHeader>
             <CardTitle>Bereiche</CardTitle>
-            <CardDescription>Interne Routen (geschützt).</CardDescription>
+            <CardDescription>Routen (geschützt nach simulierter Rolle).</CardDescription>
           </CardHeader>
           <CardContent className="flex flex-col gap-2 text-sm">
-            <Link className="text-primary underline-offset-4 hover:underline" href="/patient">
-              Patient
-            </Link>
-            <Link className="text-primary underline-offset-4 hover:underline" href="/doctor">
-              Arzt
-            </Link>
-            <Link className="text-primary underline-offset-4 hover:underline" href="/admin">
-              Admin
-            </Link>
+            <Button asChild variant="outline" className="w-fit">
+              <Link href="/patient">Patient</Link>
+            </Button>
+            <Button asChild variant="outline" className="w-fit">
+              <Link href="/doctor">Arzt</Link>
+            </Button>
+            <Button asChild variant="outline" className="w-fit">
+              <Link href="/admin">Admin</Link>
+            </Button>
           </CardContent>
         </Card>
       </div>

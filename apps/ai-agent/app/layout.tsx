@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 
+import { Toaster } from "@mediconnect/ui";
+
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -9,8 +11,11 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="de">
-      <body className="min-h-screen antialiased">{children}</body>
+    <html lang="de" suppressHydrationWarning>
+      <body className="min-h-screen antialiased" suppressHydrationWarning>
+        {children}
+        <Toaster />
+      </body>
     </html>
   );
 }

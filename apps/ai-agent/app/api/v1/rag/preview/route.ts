@@ -1,34 +1,28 @@
 import { NextResponse } from "next/server";
 
-import { rankKnowledgeChunks } from "@mediconnect/knowledge-base";
-import type { KnowledgeChunk } from "@mediconnect/types";
+import { prisma } from "@mediconnect/db";
+import { retrieveHospitalKnowledgeWithFallback } from "@mediconnect/knowledge-base";
 
 export const dynamic = "force-dynamic";
 
-/** Demo endpoint: rank static chunks (replace with DB + embeddings in production). */
+/** Dev/demo: semantic retrieval with lexical fallback (same pipeline as apps/video knowledge-preview). */
 export async function POST(req: Request) {
   const body = (await req.json().catch(() => null)) as { query?: string } | null;
   const query = body?.query ?? "";
-  const demo: KnowledgeChunk[] = [
-    {
-      id: "1",
-      source: "demo",
-      content: "Hypertension management in primary care.",
-      embedding: null,
-      metadata: null,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    },
-    {
-      id: "2",
-      source: "demo",
-      content: "Vaccination schedule for adults in Germany.",
-      embedding: null,
-      metadata: null,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    },
-  ];
-  const ranked = rankKnowledgeChunks(query, demo, 3);
-  return NextResponse.json({ query, ranked });
+
+  const { chunks, mode, distances } = await retrieveHospitalKnowledgeWithFallback(prisma, query, 5);
+
+  return NextResponse.json({
+    query,
+    mode,
+    ranked: chunks.map((c, i) => ({
+      id: c.id,
+      source: c.source,
+      content: c.content.slice(0, 800),
+      score:
+        mode === "semantic" && distances && distances[i] !== undefined
+          ? Math.max(0, 1 - distances[i]!)
+          : undefined,
+    })),
+  });
 }

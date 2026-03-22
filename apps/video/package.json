@@ -8,11 +8,21 @@
     "start": "next start -p 3001",
     "lint": "next lint",
     "type-check": "tsc --noEmit",
-    "test": "vitest run --passWithNoTests"
+    "test": "vitest run --passWithNoTests",
+    "test:beyond-presence": "tsx scripts/test-beyond-presence.ts"
   },
   "dependencies": {
+    "@livekit/components-react": "^2.9.20",
+    "@livekit/components-styles": "^1.2.0",
+    "@mediconnect/api-client": "workspace:*",
+    "@mediconnect/auth": "workspace:*",
+    "@mediconnect/db": "workspace:*",
+    "@mediconnect/knowledge-base": "workspace:*",
     "@mediconnect/types": "workspace:*",
     "@mediconnect/ui": "workspace:*",
+    "dotenv": "^17.3.1",
+    "livekit-client": "^2.17.3",
+    "livekit-server-sdk": "^2",
     "next": "^14.2.21",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
@@ -27,6 +37,7 @@
     "eslint-config-next": "^14.2.21",
     "postcss": "^8.4.49",
     "tailwindcss": "^3.4.17",
+    "tsx": "^4.19.2",
     "typescript": "^5.7.2",
     "vitest": "^2.1.8"
   }
