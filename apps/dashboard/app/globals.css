@@ -1,1 +1,38 @@
 @import "../../../packages/ui/src/globals.css";
+
+@import url("https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0..1,0&display=swap");
+
+.ether-sidebar {
+  background: rgba(248, 250, 252, 0.7);
+}
+
+.dark .ether-sidebar {
+  background: rgba(15, 23, 42, 0.72);
+}
+
+.material-symbols-outlined {
+  font-variation-settings:
+    "FILL" 0,
+    "wght" 400,
+    "GRAD" 0,
+    "opsz" 24;
+}
+
+@keyframes ether-pulse-ring {
+  0% {
+    transform: scale(0.95);
+    box-shadow: 0 0 0 0 rgba(111, 251, 133, 0.55);
+  }
+  70% {
+    transform: scale(1);
+    box-shadow: 0 0 0 10px rgba(111, 251, 133, 0);
+  }
+  100% {
+    transform: scale(0.95);
+    box-shadow: 0 0 0 0 rgba(111, 251, 133, 0);
+  }
+}
+
+.ether-pulse-dot {
+  animation: ether-pulse-ring 2s infinite;
+}

@@ -19,8 +19,7 @@
       "cache": false
     },
     "db:seed": {
-      "cache": false,
-      "dependsOn": ["build"]
+      "cache": false
     }
   }
 }

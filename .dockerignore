@@ -1,0 +1,12 @@
+**/node_modules
+**/.next
+**/.turbo
+**/dist
+.git
+.cursor
+*.md
+!compose.env.example
+.env
+.env.*
+!.env.example
+mcps

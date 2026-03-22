@@ -295,7 +295,7 @@ async function main() {
     });
   }
 
-  console.log("Seed completed. Dev password for seeded users: mediconnect-dev");
+  console.log("Seed completed. Sign in at each app’s /login with patient@, doctor@, or admin@mediconnect.local.");
 }
 
 main()

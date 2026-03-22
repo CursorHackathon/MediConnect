@@ -7,6 +7,7 @@
     "jsx": "preserve",
     "noEmit": true,
     "paths": {
+      "@/*": ["./*"],
       "@mediconnect/db": ["../../packages/db/src/index.ts"],
       "@mediconnect/ui": ["../../packages/ui/src/index.ts"],
       "@mediconnect/types": ["../../packages/types/src/index.ts"],

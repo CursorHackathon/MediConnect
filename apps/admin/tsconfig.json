@@ -7,6 +7,7 @@
     "jsx": "preserve",
     "noEmit": true,
     "paths": {
+      "@/*": ["./*"],
       "@mediconnect/db": ["../../packages/db/src/index.ts"],
       "@mediconnect/ui": ["../../packages/ui/src/index.ts"],
       "@mediconnect/types": ["../../packages/types/src/index.ts"],
@@ -15,12 +16,6 @@
       "@mediconnect/knowledge-base": ["../../packages/knowledge-base/src/index.ts"]
     }
   },
-  "include": [
-    "next-env.d.ts",
-    "**/*.ts",
-    "**/*.tsx",
-    ".next/types/**/*.ts",
-    "../../packages/auth/src/next-auth.d.ts"
-  ],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
   "exclude": ["node_modules"]
 }

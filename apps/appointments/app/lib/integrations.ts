@@ -41,8 +41,8 @@ export async function deleteCalendarOnCancel(_appointmentId: string): Promise<vo
 }
 
 export async function sendBookingEmails(payload: BookingNotificationPayload): Promise<void> {
-  const subject = `Termin bestätigt — ${payload.doctorName ?? "Arzt"}`;
-  const body = `Ihr Termin am ${payload.appointment.startsAt.toISOString()}\nVideo: ${payload.appointment.videoRoomUrl ?? "—"}\n`;
+  const subject = `Appointment confirmed — ${payload.doctorName ?? "Doctor"}`;
+  const body = `Your appointment at ${payload.appointment.startsAt.toISOString()}\nVideo: ${payload.appointment.videoRoomUrl ?? "—"}\n`;
   if (!process.env.GMAIL_SENDER_EMAIL) {
     console.info("[Email] Would send to", payload.patientEmail, subject, body);
     return;

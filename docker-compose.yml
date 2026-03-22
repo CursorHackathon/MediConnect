@@ -1,0 +1,156 @@
+# Full MediConnect stack: Postgres/Redis/MinIO/Mailhog + all Next.js apps.
+#
+# Prereq: copy compose.env.example → .env in this directory (NEXTAUTH_SECRET and per-app NEXTAUTH_URL).
+# First run against an empty DB (from repo host, Postgres port published):
+#   pnpm db:migrate && pnpm db:seed
+#
+# Start everything (recommended — avoids BuildKit EOF on Docker Desktop / Windows):
+#   pnpm docker:up
+#   (builds app images sequentially; `up -d --build` runs all builds in parallel and can crash the engine)
+#
+# URLs (browser): Portal :3000, Video :3001, Dashboard :3002, Appointments :3003,
+# Doctor AI :3004, Admin :3005. Use App Hub buttons in each UI to switch apps.
+#
+# Infra-only (no Next apps): docker compose -f infra/docker/docker-compose.yml up -d
+#
+# Security: infra/docker/docker-compose.yml loads infra/docker/.env — keep that file limited to
+# Postgres/Redis/MinIO/Mailhog vars only (see infra/docker/.env.example). Do not symlink the
+# monorepo root .env there, or secrets will be injected into database/cache containers.
+
+name: mediconnect
+
+include:
+  - path: infra/docker/docker-compose.yml
+
+x-app-build-args: &app-build-args
+  NEXT_PUBLIC_URL_WEB: http://localhost:3000
+  NEXT_PUBLIC_URL_VIDEO: http://localhost:3001
+  NEXT_PUBLIC_URL_DASHBOARD: http://localhost:3002
+  NEXT_PUBLIC_URL_APPOINTMENTS: http://localhost:3003
+  NEXT_PUBLIC_URL_AI_AGENT: http://localhost:3004
+  NEXT_PUBLIC_URL_ADMIN: http://localhost:3005
+
+x-app-db: &app-db
+  DATABASE_URL: postgresql://mediconnect:mediconnect@postgres:5432/mediconnect
+
+services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        <<: *app-build-args
+        TURBO_FILTER: "@mediconnect/web"
+        APP_DIR: web
+        PORT: 3000
+    ports:
+      - "3000:3000"
+    environment:
+      <<: *app-db
+      NEXTAUTH_SECRET: ${NEXTAUTH_SECRET:?Set NEXTAUTH_SECRET in .env — see compose.env.example}
+      NEXTAUTH_URL: http://localhost:3000
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  video:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        <<: *app-build-args
+        TURBO_FILTER: "@mediconnect/video"
+        APP_DIR: video
+        PORT: 3001
+    ports:
+      - "3001:3001"
+    environment:
+      <<: *app-db
+      NEXTAUTH_SECRET: ${NEXTAUTH_SECRET:?Set NEXTAUTH_SECRET in .env}
+      NEXTAUTH_URL: http://localhost:3001
+      LIVEKIT_URL: ${LIVEKIT_URL:-}
+      LIVEKIT_API_KEY: ${LIVEKIT_API_KEY:-}
+      LIVEKIT_API_SECRET: ${LIVEKIT_API_SECRET:-}
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  dashboard:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        <<: *app-build-args
+        TURBO_FILTER: "@mediconnect/dashboard"
+        APP_DIR: dashboard
+        PORT: 3002
+    ports:
+      - "3002:3002"
+    environment:
+      <<: *app-db
+      NEXTAUTH_SECRET: ${NEXTAUTH_SECRET:?Set NEXTAUTH_SECRET in .env}
+      NEXTAUTH_URL: http://localhost:3002
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  appointments:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        <<: *app-build-args
+        TURBO_FILTER: "@mediconnect/appointments"
+        APP_DIR: appointments
+        PORT: 3003
+    ports:
+      - "3003:3003"
+    environment:
+      <<: *app-db
+      NEXTAUTH_SECRET: ${NEXTAUTH_SECRET:?Set NEXTAUTH_SECRET in .env}
+      NEXTAUTH_URL: http://localhost:3003
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  ai-agent:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        <<: *app-build-args
+        TURBO_FILTER: "@mediconnect/ai-agent"
+        APP_DIR: ai-agent
+        PORT: 3004
+    ports:
+      - "3004:3004"
+    environment:
+      <<: *app-db
+      NEXTAUTH_SECRET: ${NEXTAUTH_SECRET:?Set NEXTAUTH_SECRET in .env}
+      NEXTAUTH_URL: http://localhost:3004
+      HF_TOKEN: ${HF_TOKEN:-}
+      LLM_API_KEY: ${LLM_API_KEY:-}
+      LLM_BASE_URL: ${LLM_BASE_URL:-}
+      LLM_MODEL: ${LLM_MODEL:-}
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  admin:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        <<: *app-build-args
+        TURBO_FILTER: "@mediconnect/admin"
+        APP_DIR: admin
+        PORT: 3005
+    ports:
+      - "3005:3005"
+    environment:
+      <<: *app-db
+      NEXTAUTH_SECRET: ${NEXTAUTH_SECRET:?Set NEXTAUTH_SECRET in .env}
+      NEXTAUTH_URL: http://localhost:3005
+    depends_on:
+      postgres:
+        condition: service_healthy

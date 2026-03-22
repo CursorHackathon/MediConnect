@@ -6,10 +6,6 @@ import { localeTag, useTranslation } from "@mediconnect/i18n";
 import {
   Badge,
   Button,
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
   Select,
   SelectContent,
   SelectItem,
@@ -90,15 +86,19 @@ export function DoctorQueueClient() {
   const statusLabel = (s: AppointmentStatus) => t(`appt.status.${s}`);
 
   return (
-    <div className="space-y-4">
-      <h1 className="text-2xl font-semibold">{t("appt.queue.page_title")}</h1>
+    <div className="space-y-6">
+      <h1 className="font-ether-headline text-3xl font-bold tracking-tight text-blue-800">
+        {t("appt.queue.page_title")}
+      </h1>
 
-      <Card>
-        <CardHeader className="flex flex-row flex-wrap items-center justify-between gap-4">
-          <CardTitle>{t("appt.queue.card_title")}</CardTitle>
+      <section className="ether-glass-panel rounded-3xl border border-white/45 p-6 shadow-[0_24px_60px_rgba(45,47,51,0.08)] md:p-8">
+        <div className="mb-6 flex flex-row flex-wrap items-center justify-between gap-4">
+          <h2 className="font-ether-headline text-xl font-bold text-ether-on-surface">
+            {t("appt.queue.card_title")}
+          </h2>
           {session?.user?.role === "ADMIN" && doctors?.length ? (
             <Select value={doctorId ?? ""} onValueChange={setDoctorId}>
-              <SelectTrigger className="w-[240px]">
+              <SelectTrigger className="w-[240px] border-white/40 bg-white/50 backdrop-blur-sm">
                 <SelectValue placeholder={t("appt.avail.doctor_select_placeholder")} />
               </SelectTrigger>
               <SelectContent>
@@ -110,12 +110,12 @@ export function DoctorQueueClient() {
               </SelectContent>
             </Select>
           ) : null}
-        </CardHeader>
-        <CardContent>
+        </div>
+        <div className="ether-glass-card rounded-2xl border border-white/35 p-4 md:p-6">
           {q.isLoading ? (
-            <p className="text-sm text-muted-foreground">{t("loading")}</p>
+            <p className="text-sm text-ether-on-surface-variant">{t("loading")}</p>
           ) : !q.data?.length ? (
-            <p className="text-sm text-muted-foreground">{t("appt.queue.empty")}</p>
+            <p className="py-6 text-center text-sm text-ether-on-surface-variant">{t("appt.queue.empty")}</p>
           ) : (
             <Table>
               <TableHeader>
@@ -183,8 +183,8 @@ export function DoctorQueueClient() {
               </TableBody>
             </Table>
           )}
-        </CardContent>
-      </Card>
+        </div>
+      </section>
     </div>
   );
 }

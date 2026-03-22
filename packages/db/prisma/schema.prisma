@@ -202,9 +202,16 @@ model Appointment {
   notes     String?           @db.Text
 
   videoRoomUrl                 String?
+  videoSessionId               String?
   googleCalendarEventIdDoctor  String?
   googleCalendarEventIdPatient String?
   reminderSentAt               DateTime?
+
+  callStartedAt DateTime?
+  callEndedAt   DateTime?
+  postCallNotes String? @db.Text
+  soapSummary   String? @db.Text
+  soapStructured Json?
 
   patient Patient @relation("PatientAppointments", fields: [patientId], references: [id], onDelete: Cascade)
   doctor  Doctor  @relation("DoctorAppointments", fields: [doctorId], references: [id])
@@ -357,6 +364,9 @@ model KnowledgeChunk {
   content   String   @db.Text
   embedding Json?
   metadata  Json?
+
+  /// pgvector (1024) — managed via raw SQL (`setKnowledgeChunkEmbeddingVector`, vector search). Must stay in schema so `db push` does not drop the column.
+  embeddingVector Unsupported("vector(1024)")?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

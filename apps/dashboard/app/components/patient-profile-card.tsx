@@ -42,7 +42,7 @@ export function PatientProfileCard({ patientId, canEdit = false }: Props) {
       gender: patient!.gender || "",
       bloodType: patient!.bloodType || "",
       allergies: (patient!.allergies || []).join(", "),
-      preferredLanguage: patient!.preferredLanguage || "de",
+      preferredLanguage: patient!.preferredLanguage || "en",
       emergencyContactName: patient!.emergencyContactName || "",
       emergencyContactPhone: patient!.emergencyContactPhone || "",
       phone: patient!.phone || "",
@@ -67,7 +67,7 @@ export function PatientProfileCard({ patientId, canEdit = false }: Props) {
     { label: t("profile.dob"), value: formatDateDE(patient.dob, locale) },
     { label: t("profile.gender"), value: patient.gender ? t(`gender.${patient.gender}`) : "—", key: "gender" },
     { label: t("profile.blood_type"), value: patient.bloodType || "—", key: "bloodType" },
-    { label: t("profile.language"), value: patient.preferredLanguage || "de", key: "preferredLanguage" },
+    { label: t("profile.language"), value: patient.preferredLanguage || "en", key: "preferredLanguage" },
     { label: t("profile.phone"), value: patient.phone || "—", key: "phone" },
   ];
 
