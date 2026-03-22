@@ -15,6 +15,12 @@ export function getAppHubUrls(): Record<AppHubId, string> {
   };
 }
 
+/** Doctor AI chat UI lives at `/chat` on the ai-agent app (skip intermediate hub page). */
+export function getDoctorAiChatUrl(): string {
+  const base = getAppHubUrls().aiAgent.replace(/\/+$/, "");
+  return `${base}/chat`;
+}
+
 const LABELS: Record<AppHubId, string> = {
   video: "Video",
   dashboard: "Dashboard",
@@ -33,6 +39,7 @@ export function AppHubNav({
   className?: string;
 }) {
   const urls = getAppHubUrls();
+  const aiChatUrl = getDoctorAiChatUrl();
 
   return (
     <nav className={className} aria-label="MediConnect applications">
@@ -40,7 +47,7 @@ export function AppHubNav({
         {ORDER.map((id) => (
           <li key={id}>
             <Button asChild variant={id === current ? "secondary" : "outline"} size="sm">
-              <a href={urls[id]} rel="noopener noreferrer">
+              <a href={id === "aiAgent" ? aiChatUrl : urls[id]} rel="noopener noreferrer">
                 {LABELS[id]}
               </a>
             </Button>

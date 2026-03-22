@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { redirect } from "next/navigation";
 
 import { getCurrentUser } from "@mediconnect/auth";
 import {
@@ -16,7 +17,10 @@ import {
 
 export default async function AdminAppPage() {
   const user = await getCurrentUser();
-  if (!user || user.role !== "ADMIN") {
+  if (!user) {
+    redirect("/login");
+  }
+  if (user.role !== "ADMIN") {
     return (
       <main className="container py-12">
         <Card className="max-w-lg">
@@ -24,11 +28,10 @@ export default async function AdminAppPage() {
             <CardTitle>Admin area</CardTitle>
           </CardHeader>
           <CardContent className="space-y-2 text-sm text-muted-foreground">
-            <p>
-              Set <code className="text-xs">SIMULATED_ROLE=ADMIN</code> in the environment (and seed the DB), or{" "}
-              <code className="text-xs">SIMULATED_USER_ID</code> to an admin user.
-            </p>
-            {user ? <p className="text-xs">Currently simulated: {user.email} ({user.role})</p> : null}
+            <p>Signed in as {user.email} ({user.role}). An administrator account is required.</p>
+            <Button asChild variant="secondary">
+              <Link href="/login">Use a different account</Link>
+            </Button>
           </CardContent>
         </Card>
       </main>

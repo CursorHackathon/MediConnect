@@ -295,7 +295,7 @@ async function main() {
     });
   }
 
-  console.log("Seed completed. Use SIMULATED_ROLE=PATIENT|DOCTOR|ADMIN (or SIMULATED_USER_ID) for local auth simulation.");
+  console.log("Seed completed. Sign in at each app’s /login with patient@, doctor@, or admin@mediconnect.local.");
 }
 
 main()

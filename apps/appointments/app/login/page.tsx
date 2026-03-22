@@ -4,7 +4,7 @@ import { useTranslation } from "@mediconnect/i18n";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { AppHubNav, Button, Card, CardContent, CardHeader, CardTitle, Input } from "@mediconnect/ui";
+import { Button, GlassAuthShell, Input } from "@mediconnect/ui";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -28,35 +28,32 @@ export default function LoginPage() {
   }
 
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center gap-4 p-4">
-      <AppHubNav current="appointments" />
-      <Card className="w-full max-w-sm">
-        <CardHeader>
-          <CardTitle>{t("appt.login.title")}</CardTitle>
-          <p className="text-sm text-muted-foreground">{t("appt.login.subtitle")}</p>
-        </CardHeader>
-        <CardContent>
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <Input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="email@mediconnect.local"
-              required
-            />
-            <Input
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-            />
-            {error && <p className="text-sm text-destructive">{error}</p>}
-            <Button type="submit" className="w-full" disabled={loading}>
-              {loading ? t("login.loading") : t("appt.login.submit")}
-            </Button>
-          </form>
-        </CardContent>
-      </Card>
-    </main>
+    <GlassAuthShell
+      hubCurrent="appointments"
+      title={t("appt.login.title")}
+      description={t("appt.login.subtitle")}
+    >
+      <form onSubmit={handleSubmit} className="space-y-4">
+        <Input
+          type="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          placeholder="email@mediconnect.local"
+          required
+          className="bg-white/60 backdrop-blur-sm"
+        />
+        <Input
+          type="password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          required
+          className="bg-white/60 backdrop-blur-sm"
+        />
+        {error && <p className="text-center text-sm text-destructive">{error}</p>}
+        <Button type="submit" className="w-full shadow-md" disabled={loading}>
+          {loading ? t("login.loading") : t("appt.login.submit")}
+        </Button>
+      </form>
+    </GlassAuthShell>
   );
 }

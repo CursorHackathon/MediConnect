@@ -144,7 +144,7 @@ External services
 | Data fetching | React Query | Queue polling, caching, background refetch |
 | ORM | Prisma | Type-safe DB access, migrations |
 | Database | PostgreSQL 15 + pgvector | Relations + vector search for RAG |
-| Auth | Simulated role (`SIMULATED_ROLE` / `SIMULATED_USER_ID`) | Dev/demo; maps to seeded DB users |
+| Auth | NextAuth (credentials) per app | Session per origin; seeded users (see `packages/db/prisma/seed.ts`) |
 | AI | Claude API (Anthropic) | Doctor agent, SOAP summaries, triage |
 | Embeddings | Hugging Face Inference (BGE-large-en-v1.5) | RAG document embeddings |
 | Voice | ElevenLabs TTS | Doctor agent read-aloud |
@@ -165,7 +165,7 @@ External services
 ```
 mediconnect/
 ├── apps/
-│   ├── web/                # Shell app — layout, role-based routing (simulated role)
+│   ├── web/                # Entry redirect → dashboard `/login`
 │   ├── video/              # E1: Video consultation
 │   ├── dashboard/          # E2: Medical dashboard
 │   ├── appointments/       # E3: Appointments and queue
@@ -361,9 +361,9 @@ Copy `.env.example` to `.env.local` and fill in each value. Here is what each on
 # Database
 DATABASE_URL              # PostgreSQL connection string (local: see docker-compose.yml)
 
-# Auth (simulation)
-SIMULATED_ROLE            # PATIENT | DOCTOR | ADMIN — first DB user with that role (see seed)
-SIMULATED_USER_ID         # Optional — explicit Prisma User.id
+# Auth (NextAuth)
+NEXTAUTH_SECRET           # Required — signing key for JWT/session (same value can be used for all apps locally)
+NEXTAUTH_URL              # Per app origin, e.g. http://localhost:3002 for dashboard
 
 # Google OAuth (Calendar + Gmail MCP)
 GOOGLE_CLIENT_ID          # From GCP Console → APIs & Services → Credentials
@@ -410,9 +410,9 @@ NEXT_PUBLIC_APP_URL       # http://localhost:3000
 pnpm dev
 
 # Start only one app (faster for focused work)
-pnpm dev --filter=dashboard
-pnpm dev --filter=appointments
-pnpm dev --filter=ai-agent
+pnpm dev --filter=@mediconnect/dashboard
+pnpm dev --filter=@mediconnect/appointments
+pnpm dev --filter=@mediconnect/ai-agent
 
 # Build all apps
 pnpm build
@@ -421,7 +421,7 @@ pnpm build
 pnpm test
 
 # Run tests for one app only
-pnpm test --filter=dashboard
+pnpm test --filter=@mediconnect/dashboard
 
 # Lint all packages
 pnpm lint

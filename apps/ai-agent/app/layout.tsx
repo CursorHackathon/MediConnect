@@ -3,6 +3,7 @@ import { Inter } from "next/font/google";
 
 import { Toaster } from "@mediconnect/ui";
 
+import { Providers } from "./providers";
 import "./globals.css";
 
 const inter = Inter({
@@ -23,8 +24,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" className={inter.variable} suppressHydrationWarning>
       <body className={`min-h-screen antialiased ${inter.className}`} suppressHydrationWarning>
-        {children}
-        <Toaster />
+        <Providers>
+          {children}
+          <Toaster />
+        </Providers>
       </body>
     </html>
   );

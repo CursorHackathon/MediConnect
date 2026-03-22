@@ -1,5 +1,11 @@
 export { cn } from "./lib/utils";
-export { AppHubNav, getAppHubUrls, type AppHubId } from "./app-hub-nav";
+export {
+  AppHubNav,
+  getAppHubUrls,
+  getDoctorAiChatUrl,
+  type AppHubId,
+} from "./app-hub-nav";
+export { GlassAuthShell } from "./glass-auth-shell";
 
 export { Badge, badgeVariants } from "./components/ui/badge";
 export { Button, buttonVariants } from "./components/ui/button";

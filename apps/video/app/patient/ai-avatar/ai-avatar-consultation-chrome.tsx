@@ -42,7 +42,7 @@ export function AiAvatarConsultationChrome({ children }: Props) {
           </Link>
           <Link
             className="flex items-center gap-3 rounded-lg px-4 py-3 text-sm text-[#596064] transition-colors hover:bg-[#dce4e8] hover:text-[#006a71] dark:text-slate-400 dark:hover:bg-slate-700 dark:hover:text-[#92f2fb]"
-            href={urls.web}
+            href={process.env.NEXT_PUBLIC_URL_WEB ?? "http://localhost:3000"}
           >
             <BarChart3 aria-hidden className="size-5 shrink-0" />
             Portal

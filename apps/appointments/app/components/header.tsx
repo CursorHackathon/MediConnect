@@ -10,16 +10,20 @@ export function Header({ links }: { links: { href: string; labelKey: string }[] 
   const { t } = useTranslation();
 
   return (
-    <header className="border-b bg-background">
-      <div className="container flex flex-col gap-2 py-2">
-        <div className="flex flex-wrap items-center justify-between gap-2">
+    <header className="sticky top-0 z-30 border-b border-white/35 bg-white/55 shadow-[0_12px_40px_rgba(45,47,51,0.07)] backdrop-blur-xl">
+      <div className="container flex flex-col gap-3 py-3">
+        <div className="flex flex-wrap items-center justify-between gap-3">
           <div className="flex flex-wrap items-center gap-4">
-            <Link href="/" className="font-semibold">
+            <Link href="/" className="font-ether-headline text-lg font-bold tracking-tight text-blue-800">
               {t("appt.header.brand")}
             </Link>
-            <nav className="flex flex-wrap gap-3 text-sm">
+            <nav className="flex flex-wrap gap-4 text-sm">
               {links.map((l) => (
-                <Link key={l.href} href={l.href} className="text-muted-foreground hover:text-foreground">
+                <Link
+                  key={l.href}
+                  href={l.href}
+                  className="font-medium text-ether-on-surface-variant transition-colors hover:text-blue-700"
+                >
                   {t(l.labelKey)}
                 </Link>
               ))}
@@ -27,14 +31,21 @@ export function Header({ links }: { links: { href: string; labelKey: string }[] 
           </div>
           <div className="flex items-center gap-2">
             {session?.user?.name && (
-              <span className="text-sm text-muted-foreground">{session.user.name}</span>
+              <span className="text-sm text-ether-on-surface-variant">{session.user.name}</span>
             )}
-            <Button variant="outline" size="sm" onClick={() => signOut({ callbackUrl: "/login" })}>
+            <Button
+              variant="outline"
+              size="sm"
+              className="border-white/50 bg-white/40 backdrop-blur-sm"
+              onClick={() => signOut({ callbackUrl: "/login" })}
+            >
               {t("header.logout")}
             </Button>
           </div>
         </div>
-        <AppHubNav current="appointments" className="border-t border-border/60 pt-2" />
+        <div className="ether-glass-panel rounded-xl border border-white/40 px-3 py-2 shadow-sm">
+          <AppHubNav current="appointments" className="[&_ul]:justify-start" />
+        </div>
       </div>
     </header>
   );

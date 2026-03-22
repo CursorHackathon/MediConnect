@@ -188,7 +188,7 @@ async function createVideoRoomForLiveKitName(roomName: string): Promise<VideoRoo
     const apiHint = summarizeBeyondPresenceErrorBody(lastSessionError.detail);
     return {
       ok: false,
-      error: `Beyond-Presence-Sitzung fehlgeschlagen (HTTP ${lastSessionError.status}).${apiHint ? ` ${apiHint}` : ""} ${CONFIG_HINT_DE}`,
+      error: `Beyond Presence session failed (HTTP ${lastSessionError.status}).${apiHint ? ` ${apiHint}` : ""} ${CONFIG_HINT}`,
     };
   }
 

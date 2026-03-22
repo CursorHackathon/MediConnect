@@ -1,11 +1,10 @@
 import { NextResponse } from "next/server";
-import { getServerSession } from "next-auth/next";
 
-import { authOptions } from "@/app/lib/auth-options";
+import { getDashboardSession } from "@/app/lib/get-dashboard-session";
 import { prisma } from "@mediconnect/db";
 
 export async function GET() {
-  const session = await getServerSession(authOptions);
+  const session = await getDashboardSession();
 
   if (!session?.user?.id || !session.user.role) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });

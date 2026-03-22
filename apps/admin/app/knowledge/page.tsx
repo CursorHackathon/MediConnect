@@ -17,8 +17,8 @@ export default async function AdminKnowledgePage() {
           </CardHeader>
           <CardContent className="space-y-2 text-sm text-muted-foreground">
             <p>
-              Admin simulation only: set <code className="text-xs">SIMULATED_ROLE=ADMIN</code> in{" "}
-              <code className="text-xs">.env</code> and restart the app.
+              Sign in with an admin account at <code className="text-xs">/login</code> (same credentials as seed:
+              admin@mediconnect.local).
             </p>
             {user ? <p className="text-xs">Current: {user.email} ({user.role})</p> : null}
             <Button asChild variant="outline" size="sm" className="mt-2">

@@ -1,7 +1,6 @@
-import { getServerSession } from "next-auth/next";
 import { NextResponse } from "next/server";
 
-import { authOptions } from "@/app/lib/auth-options";
+import { getDashboardSession } from "@/app/lib/get-dashboard-session";
 import { prisma } from "@mediconnect/db";
 
 export type AuthContext = {
@@ -19,7 +18,7 @@ export async function authorizePatientAccess(
   requestedPatientId: string,
   allowedRoles: string[] = ["DOCTOR", "NURSE", "PATIENT", "ADMIN"],
 ): Promise<{ error?: NextResponse; auth?: AuthContext }> {
-  const session = await getServerSession(authOptions);
+  const session = await getDashboardSession();
 
   if (!session?.user?.id || !session.user.role) {
     return { error: NextResponse.json({ error: "Unauthorized" }, { status: 401 }) };

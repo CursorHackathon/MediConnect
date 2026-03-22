@@ -1,6 +1,6 @@
 # Full MediConnect stack: Postgres/Redis/MinIO/Mailhog + all Next.js apps.
 #
-# Prereq: copy compose.env.example → .env in this directory (at least NEXTAUTH_SECRET).
+# Prereq: copy compose.env.example → .env in this directory (NEXTAUTH_SECRET and per-app NEXTAUTH_URL).
 # First run against an empty DB (from repo host, Postgres port published):
 #   pnpm db:migrate && pnpm db:seed
 #
@@ -131,6 +131,7 @@ services:
       HF_TOKEN: ${HF_TOKEN:-}
       LLM_API_KEY: ${LLM_API_KEY:-}
       LLM_BASE_URL: ${LLM_BASE_URL:-}
+      LLM_MODEL: ${LLM_MODEL:-}
     depends_on:
       postgres:
         condition: service_healthy

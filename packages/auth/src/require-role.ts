@@ -4,7 +4,7 @@ import { NextResponse } from "next/server";
 import { getCurrentUser } from "./get-current-user";
 
 /**
- * Ensures the simulated user has one of the allowed roles.
+ * Ensures the signed-in user has one of the allowed roles.
  * Returns a `NextResponse` with 401/403 for route handlers, or `null` when authorized.
  */
 export async function requireRole(allowed: Role | Role[]): Promise<NextResponse | null> {

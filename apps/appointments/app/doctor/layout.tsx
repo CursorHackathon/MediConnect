@@ -9,7 +9,7 @@ export default function DoctorLayout({ children }: { children: React.ReactNode }
           { href: "/doctor/availability", labelKey: "appt.nav.availability" },
         ]}
       />
-      <div className="container py-8">{children}</div>
+      <div className="container relative z-10 py-8">{children}</div>
     </div>
   );
 }

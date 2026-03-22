@@ -1,7 +1,8 @@
+import Link from "next/link";
 import { redirect } from "next/navigation";
 
 import { getCurrentUser } from "@mediconnect/auth";
-import { Badge, Card, CardContent, CardDescription, CardHeader, CardTitle } from "@mediconnect/ui";
+import { Badge, Button, Card, CardContent, CardDescription, CardHeader, CardTitle } from "@mediconnect/ui";
 
 export default async function VideoHomePage() {
   const user = await getCurrentUser();
@@ -21,15 +22,17 @@ export default async function VideoHomePage() {
       </div>
       <Card className="max-w-lg">
         <CardHeader>
-          <CardTitle>No user for simulation</CardTitle>
+          <CardTitle>Sign in required</CardTitle>
           <CardDescription>
-            Seed the database and set <code className="text-xs">SIMULATED_ROLE</code> (PATIENT, DOCTOR, or ADMIN) so a
-            matching user is found.
+            Open <code className="text-xs">/login</code> and sign in with a seeded account (patient@, doctor@, or
+            admin@mediconnect.local) so MediConnect Video can route you by role.
           </CardDescription>
         </CardHeader>
-        <CardContent className="text-sm text-muted-foreground">
-          Optional: set <code className="text-xs">SIMULATED_USER_ID</code> to a specific <code className="text-xs">User</code>{" "}
-          id.
+        <CardContent className="flex flex-col gap-3 text-sm text-muted-foreground">
+          <p>After login you will be redirected to the patient or doctor area automatically.</p>
+          <Button asChild>
+            <Link href="/login">Go to sign in</Link>
+          </Button>
         </CardContent>
       </Card>
     </main>

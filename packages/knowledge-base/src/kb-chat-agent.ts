@@ -233,13 +233,13 @@ async function formatPatientClinicalSummary(
     if (visits.length === 0) lines.push("- None");
     else {
       for (const a of visits) {
-        const soap = a.soapSummary ? ` SOAP: ${a.soapSummary.slice(0, 280)}${a.soapSummary.length > 280 ? "…" : ""}` : "";
+        const soap = a.soapSummary
+          ? ` SOAP: ${a.soapSummary.slice(0, 280)}${a.soapSummary.length > 280 ? "…" : ""}`
+          : "";
         const notes = a.postCallNotes
           ? ` Notes: ${a.postCallNotes.slice(0, 200)}${a.postCallNotes.length > 200 ? "…" : ""}`
           : "";
-        lines.push(
-          `- ${a.startsAt.toISOString().slice(0, 16)} — ${a.status}${soap}${notes}`,
-        );
+        lines.push(`- ${a.startsAt.toISOString().slice(0, 16)} — ${a.status}${soap}${notes}`);
       }
     }
   }

@@ -20,13 +20,10 @@ export default async function ChatPage() {
         <AppHubNav current="aiAgent" className="[&_ul]:justify-center" />
         <h1 className="mb-2 text-xl font-semibold text-foreground">Doctor or admin access required</h1>
         <p className="mb-6 text-sm text-muted-foreground">
-          This assistant uses hospital knowledge search and optional patient chart tools. For local dev, set{" "}
-          <code className="rounded bg-muted px-1">SIMULATED_ROLE=DOCTOR</code> or{" "}
-          <code className="rounded bg-muted px-1">SIMULATED_USER_ID</code> to a doctor user in{" "}
-          <code className="rounded bg-muted px-1">.env</code> (same pattern as the video app).
+          Sign in with a doctor or administrator account to use the clinical assistant.
         </p>
         <Button asChild variant="secondary">
-          <Link href="/">← Home</Link>
+          <Link href="/login">Sign in</Link>
         </Button>
       </main>
     );

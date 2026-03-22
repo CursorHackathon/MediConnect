@@ -67,3 +67,62 @@
     @apply bg-background text-foreground;
   }
 }
+
+/* Shared glass surfaces (dashboard, video, appointments, auth). */
+@layer components {
+  .ether-glass-panel {
+    background: rgba(255, 255, 255, 0.6);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+  }
+
+  .dark .ether-glass-panel {
+    background: rgba(15, 23, 42, 0.55);
+  }
+
+  .ether-glass-card {
+    background: rgba(255, 255, 255, 0.4);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+  }
+
+  .dark .ether-glass-card {
+    background: rgba(15, 23, 42, 0.45);
+  }
+}
+
+@keyframes mc-auth-orb {
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1);
+    opacity: 0.45;
+  }
+  33% {
+    transform: translate(12px, -18px) scale(1.04);
+    opacity: 0.55;
+  }
+  66% {
+    transform: translate(-16px, 10px) scale(0.98);
+    opacity: 0.5;
+  }
+}
+
+@keyframes mc-auth-orb-slow {
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1);
+    opacity: 0.35;
+  }
+  50% {
+    transform: translate(-22px, -12px) scale(1.06);
+    opacity: 0.5;
+  }
+}
+
+.mc-auth-orb-a {
+  animation: mc-auth-orb 22s ease-in-out infinite;
+}
+
+.mc-auth-orb-b {
+  animation: mc-auth-orb-slow 28s ease-in-out infinite;
+}

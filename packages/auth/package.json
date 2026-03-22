@@ -6,7 +6,9 @@
   "types": "./src/index.ts",
   "exports": {
     ".": "./src/index.ts",
-    "./simulated-role": "./src/simulated-role.ts"
+    "./credentials-auth-options": "./src/credentials-auth-options.ts",
+    "./middleware-jwt": "./src/middleware-jwt.ts",
+    "./next-auth-augment": "./src/next-auth-augment.ts"
   },
   "scripts": {
     "lint": "tsc --noEmit -p tsconfig.json",
@@ -14,9 +16,12 @@
     "test": "vitest run --passWithNoTests"
   },
   "dependencies": {
-    "@mediconnect/db": "workspace:*"
+    "@mediconnect/db": "workspace:*",
+    "bcryptjs": "^2.4.3",
+    "next-auth": "^4.24.11"
   },
   "devDependencies": {
+    "@types/bcryptjs": "^2.4.6",
     "@types/node": "^22.10.2",
     "next": "^14.2.21",
     "react": "^18.3.1",

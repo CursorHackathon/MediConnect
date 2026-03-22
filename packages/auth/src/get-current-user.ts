@@ -1,26 +1,21 @@
-import type { Role } from "@prisma/client";
+import { getServerSession } from "next-auth";
 import { prisma } from "@mediconnect/db";
 
-import { getSimulatedRoleFromEnv } from "./simulated-role";
+import { credentialsAuthOptions } from "./credentials-auth-options";
 
 export type CurrentUser = NonNullable<Awaited<ReturnType<typeof getCurrentUser>>>;
 
 /**
- * Dev/demo: loads a user from the DB using `SIMULATED_USER_ID` or the first user
- * with `SIMULATED_ROLE` (default PATIENT). Seed creates admin@, doctor@, patient@ users.
+ * Resolves the signed-in user from the NextAuth JWT session and loads full Prisma profile.
+ * Each app must mount `app/api/auth/[...nextauth]/route.ts` with `credentialsAuthOptions`.
  */
 export async function getCurrentUser() {
-  const userId = process.env.SIMULATED_USER_ID?.trim();
-  if (userId) {
-    return prisma.user.findUnique({
-      where: { id: userId },
-      include: { patient: true, doctor: true },
-    });
-  }
+  const session = await getServerSession(credentialsAuthOptions);
+  const id = session?.user?.id;
+  if (!id) return null;
 
-  const role = getSimulatedRoleFromEnv() as Role;
-  return prisma.user.findFirst({
-    where: { role },
+  return prisma.user.findUnique({
+    where: { id },
     include: { patient: true, doctor: true },
   });
 }

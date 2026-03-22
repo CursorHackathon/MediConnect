@@ -1,25 +1,30 @@
-import type { NextRequest } from "next/server";
+import { withAuth } from "next-auth/middleware";
 import { NextResponse } from "next/server";
 
-import { getSimulatedRoleFromEnv } from "@mediconnect/auth/simulated-role";
-
-function hasRole(role: string, allowed: readonly string[]) {
-  return allowed.includes(role);
-}
-
-export function middleware(req: NextRequest) {
-  const role = getSimulatedRoleFromEnv();
-  const path = req.nextUrl.pathname;
-
-  if (path.startsWith("/doctor") && !hasRole(role, ["DOCTOR", "ADMIN"])) {
-    return NextResponse.redirect(new URL("/", req.url));
-  }
-  if (path.startsWith("/patient") && !hasRole(role, ["PATIENT", "ADMIN"])) {
-    return NextResponse.redirect(new URL("/", req.url));
-  }
-
-  return NextResponse.next();
-}
+export default withAuth(
+  function middleware(req) {
+    const path = req.nextUrl.pathname;
+    const role = req.nextauth.token?.role as string | undefined;
+    if (path.startsWith("/doctor") && role !== "DOCTOR" && role !== "ADMIN") {
+      return NextResponse.redirect(new URL("/", req.url));
+    }
+    if (path.startsWith("/patient") && role !== "PATIENT" && role !== "ADMIN") {
+      return NextResponse.redirect(new URL("/", req.url));
+    }
+    return NextResponse.next();
+  },
+  {
+    callbacks: {
+      authorized: ({ token, req }) => {
+        const path = req.nextUrl.pathname;
+        if (path.startsWith("/api/auth")) return true;
+        if (path === "/login") return true;
+        if (path === "/") return true;
+        return !!token;
+      },
+    },
+  },
+);
 
 export const config = {
   matcher: ["/((?!_next/static|_next/image|favicon.ico).*)"],
