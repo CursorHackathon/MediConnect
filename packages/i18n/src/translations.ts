@@ -1,8 +1,8 @@
-import type { Locale } from "./types";
-import { appointmentsDe, appointmentsEn } from "./appointments-translations";
-import { dashboardBundle } from "./dashboard-translations";
+import { appointmentsStrings } from "./appointments-translations";
+import { dashboardStrings } from "./dashboard-translations";
 
-export const translations: Record<Locale, Record<string, string>> = {
-  de: { ...dashboardBundle.de, ...appointmentsDe },
-  en: { ...dashboardBundle.en, ...appointmentsEn },
+/** Flat English string map for `t(key)`. */
+export const translations: Record<string, string> = {
+  ...dashboardStrings,
+  ...appointmentsStrings,
 };

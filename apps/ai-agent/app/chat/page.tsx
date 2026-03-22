@@ -32,15 +32,18 @@ export default async function ChatPage() {
     );
   }
 
+  const doctorDisplayName = user.name?.trim() || user.email.split("@")[0] || "Doctor";
+  const specialtyLabel =
+    user.role === Role.ADMIN && !user.doctor?.specialty
+      ? "Administrator"
+      : user.doctor?.specialty?.trim() || "Clinical practice";
+
   return (
-    <main className="container max-w-3xl py-8">
-      <AppHubNav current="aiAgent" className="mb-4" />
-      <div className="mb-4 flex items-center gap-2">
-        <Button asChild size="sm" variant="ghost">
-          <Link href="/">← Home</Link>
-        </Button>
-      </div>
-      <KbChatClient />
-    </main>
+    <KbChatClient
+      doctorDisplayName={doctorDisplayName}
+      specialtyLabel={specialtyLabel}
+      avatarUrl={user.image}
+      patientLabel="#PX-8821"
+    />
   );
 }

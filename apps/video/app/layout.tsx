@@ -15,7 +15,7 @@ export const dynamic = "force-dynamic";
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="de">
+    <html lang="en">
       <body className="min-h-screen antialiased">
         <div className="border-b bg-muted/40">
           <div className="container py-2">

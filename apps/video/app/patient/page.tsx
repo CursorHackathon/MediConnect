@@ -30,42 +30,42 @@ export default async function PatientVideoHubPage() {
     <main className="container space-y-6 py-10">
       <div className="flex items-center gap-2">
         <h1 className="text-2xl font-semibold">Video — Patient</h1>
-        <Badge variant="outline">KI</Badge>
+        <Badge variant="outline">AI</Badge>
       </div>
       <Card className="border-primary/30 bg-primary/5">
         <CardHeader>
-          <CardTitle>KI-Gesundheitscoach (Avatar)</CardTitle>
+          <CardTitle>AI health coach (avatar)</CardTitle>
           <CardDescription>
-            Video-Gespräch mit der KI: Sie sprechen, die KI antwortet mit Stimme und digitalem Gesicht (LiveKit + Beyond
-            Presence). Kein Arzt-Video nötig.
+            Video conversation with the AI: you speak, it responds with voice and a digital face. No doctor video
+            required.
           </CardDescription>
         </CardHeader>
         <CardContent>
           <Button asChild>
-            <Link href="/patient/ai-avatar">Zum KI-Video</Link>
+            <Link href="/patient/ai-avatar">Open AI video</Link>
           </Button>
         </CardContent>
       </Card>
       <Card>
         <CardHeader>
-          <CardTitle>Arzttermine (optional)</CardTitle>
-          <CardDescription>Falls Sie einen klassischen Videosprechstunden-Termin haben.</CardDescription>
+          <CardTitle>Doctor appointments (optional)</CardTitle>
+          <CardDescription>If you have a classic video visit scheduled.</CardDescription>
         </CardHeader>
         <CardContent className="space-y-3">
           {appointments.length === 0 ? (
-            <p className="text-sm text-muted-foreground">Keine Termine.</p>
+            <p className="text-sm text-muted-foreground">No appointments.</p>
           ) : (
             <ul className="space-y-2">
               {appointments.map((a) => (
                 <li className="flex flex-wrap items-center justify-between gap-2 border-b pb-2" key={a.id}>
                   <div>
-                    <p className="font-medium">{a.doctor?.user.name ?? "Arzt"}</p>
+                    <p className="font-medium">{a.doctor?.user.name ?? "Doctor"}</p>
                     <p className="text-xs text-muted-foreground">
-                      {a.startsAt.toLocaleString("de-DE")} · {a.status}
+                      {a.startsAt.toLocaleString("en-US")} · {a.status}
                     </p>
                   </div>
                   <Button asChild size="sm" variant="secondary">
-                    <Link href={`/patient/appointments/${a.id}/call`}>Warteraum</Link>
+                    <Link href={`/patient/appointments/${a.id}/call`}>Waiting room</Link>
                   </Button>
                 </li>
               ))}

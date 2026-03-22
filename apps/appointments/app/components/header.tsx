@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { LanguageToggle, useTranslation } from "@mediconnect/i18n";
+import { useTranslation } from "@mediconnect/i18n";
 import { signOut, useSession } from "next-auth/react";
 import { AppHubNav, Button } from "@mediconnect/ui";
 
@@ -26,7 +26,6 @@ export function Header({ links }: { links: { href: string; labelKey: string }[] 
             </nav>
           </div>
           <div className="flex items-center gap-2">
-            <LanguageToggle />
             {session?.user?.name && (
               <span className="text-sm text-muted-foreground">{session.user.name}</span>
             )}

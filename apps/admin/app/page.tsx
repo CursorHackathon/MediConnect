@@ -21,14 +21,14 @@ export default async function AdminAppPage() {
       <main className="container py-12">
         <Card className="max-w-lg">
           <CardHeader>
-            <CardTitle>Admin-Bereich</CardTitle>
+            <CardTitle>Admin area</CardTitle>
           </CardHeader>
           <CardContent className="space-y-2 text-sm text-muted-foreground">
             <p>
-              Setzen Sie in der Umgebung <code className="text-xs">SIMULATED_ROLE=ADMIN</code> (und DB-Seed), oder{" "}
-              <code className="text-xs">SIMULATED_USER_ID</code> auf einen Admin-Nutzer.
+              Set <code className="text-xs">SIMULATED_ROLE=ADMIN</code> in the environment (and seed the DB), or{" "}
+              <code className="text-xs">SIMULATED_USER_ID</code> to an admin user.
             </p>
-            {user ? <p className="text-xs">Aktuell simuliert: {user.email} ({user.role})</p> : null}
+            {user ? <p className="text-xs">Currently simulated: {user.email} ({user.role})</p> : null}
           </CardContent>
         </Card>
       </main>
@@ -38,49 +38,51 @@ export default async function AdminAppPage() {
   return (
     <main className="container space-y-6 py-12">
       <div className="flex items-center gap-2">
-        <h1 className="text-2xl font-semibold">Admin-Konsole</h1>
+        <h1 className="text-2xl font-semibold">Admin console</h1>
         <Badge variant="outline">E5</Badge>
       </div>
       <Tabs defaultValue="rbac">
         <TabsList>
           <TabsTrigger value="rbac">RBAC</TabsTrigger>
-          <TabsTrigger value="users">Nutzerverwaltung</TabsTrigger>
-          <TabsTrigger value="meds">Medikamente</TabsTrigger>
-          <TabsTrigger value="kb">Wissensbasis</TabsTrigger>
+          <TabsTrigger value="users">Users</TabsTrigger>
+          <TabsTrigger value="meds">Medications</TabsTrigger>
+          <TabsTrigger value="kb">Knowledge base</TabsTrigger>
         </TabsList>
         <TabsContent value="rbac">
           <Card>
             <CardHeader>
-              <CardTitle>Rollen & Berechtigungen</CardTitle>
+              <CardTitle>Roles & permissions</CardTitle>
             </CardHeader>
-            <CardContent className="text-sm text-muted-foreground">Shell für rollenbasierte Zugriffskontrolle.</CardContent>
+            <CardContent className="text-sm text-muted-foreground">Shell for role-based access control.</CardContent>
           </Card>
         </TabsContent>
         <TabsContent value="users">
           <Card>
             <CardHeader>
-              <CardTitle>Benutzer</CardTitle>
+              <CardTitle>Users</CardTitle>
             </CardHeader>
-            <CardContent className="text-sm text-muted-foreground">Verwaltung von Konten und Profilen.</CardContent>
+            <CardContent className="text-sm text-muted-foreground">Account and profile management.</CardContent>
           </Card>
         </TabsContent>
         <TabsContent value="meds">
           <Card>
             <CardHeader>
-              <CardTitle>Medikamente</CardTitle>
+              <CardTitle>Medications</CardTitle>
             </CardHeader>
-            <CardContent className="text-sm text-muted-foreground">Arzneimittelstammdaten (Anbindung DrugBank / intern).</CardContent>
+            <CardContent className="text-sm text-muted-foreground">
+              Drug master data (DrugBank / internal integration).
+            </CardContent>
           </Card>
         </TabsContent>
         <TabsContent value="kb">
           <Card>
             <CardHeader>
-              <CardTitle>Krankenhaus-Dokumente</CardTitle>
+              <CardTitle>Hospital documents</CardTitle>
             </CardHeader>
             <CardContent className="flex flex-col gap-3 text-sm text-muted-foreground">
-              <p>PDF-Upload und Embeddings folgen in einem späteren Schritt. Jetzt: Text einfügen und chunken.</p>
+              <p>PDF upload and embeddings will follow. For now: paste text and chunk.</p>
               <Button asChild className="w-fit">
-                <Link href="/knowledge">Zur Wissensbasis</Link>
+                <Link href="/knowledge">Open knowledge base</Link>
               </Button>
             </CardContent>
           </Card>

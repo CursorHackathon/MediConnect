@@ -13,16 +13,16 @@ export default async function AdminKnowledgePage() {
       <main className="container py-12">
         <Card className="max-w-lg">
           <CardHeader>
-            <CardTitle>Wissensbasis</CardTitle>
+            <CardTitle>Knowledge base</CardTitle>
           </CardHeader>
           <CardContent className="space-y-2 text-sm text-muted-foreground">
             <p>
-              Nur mit Admin-Simulation: <code className="text-xs">SIMULATED_ROLE=ADMIN</code> in <code className="text-xs">.env</code>{" "}
-              und App neu starten.
+              Admin simulation only: set <code className="text-xs">SIMULATED_ROLE=ADMIN</code> in{" "}
+              <code className="text-xs">.env</code> and restart the app.
             </p>
-            {user ? <p className="text-xs">Aktuell: {user.email} ({user.role})</p> : null}
+            {user ? <p className="text-xs">Current: {user.email} ({user.role})</p> : null}
             <Button asChild variant="outline" size="sm" className="mt-2">
-              <Link href="/">← Zurück</Link>
+              <Link href="/">← Back</Link>
             </Button>
           </CardContent>
         </Card>
@@ -39,20 +39,20 @@ export default async function AdminKnowledgePage() {
         <Button asChild variant="ghost" size="sm">
           <Link href="/">← Admin</Link>
         </Button>
-        <h1 className="text-2xl font-semibold">Wissensbasis</h1>
+        <h1 className="text-2xl font-semibold">Knowledge base</h1>
         <Badge variant="outline">E1</Badge>
       </div>
 
       <Card>
         <CardHeader>
-          <CardTitle className="text-base">Statistik</CardTitle>
+          <CardTitle className="text-base">Statistics</CardTitle>
         </CardHeader>
         <CardContent className="text-sm text-muted-foreground">
           <p>
-            Krankenhaus-Chunks: <span className="font-medium text-foreground">{hospital.length}</span>
+            Hospital chunks: <span className="font-medium text-foreground">{hospital.length}</span>
           </p>
           <p>
-            Alle Chunks (inkl. Seed): <span className="font-medium text-foreground">{rows.length}</span>
+            All chunks (incl. seed): <span className="font-medium text-foreground">{rows.length}</span>
           </p>
         </CardContent>
       </Card>

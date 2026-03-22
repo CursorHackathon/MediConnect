@@ -21,15 +21,15 @@ export default async function VideoHomePage() {
       </div>
       <Card className="max-w-lg">
         <CardHeader>
-          <CardTitle>Kein Nutzer für die Simulation</CardTitle>
+          <CardTitle>No user for simulation</CardTitle>
           <CardDescription>
-            Bitte Datenbank seeden und <code className="text-xs">SIMULATED_ROLE</code> setzen (PATIENT, DOCTOR oder
-            ADMIN), damit ein passender Nutzer gefunden wird.
+            Seed the database and set <code className="text-xs">SIMULATED_ROLE</code> (PATIENT, DOCTOR, or ADMIN) so a
+            matching user is found.
           </CardDescription>
         </CardHeader>
         <CardContent className="text-sm text-muted-foreground">
-          Optional: <code className="text-xs">SIMULATED_USER_ID</code> auf eine konkrete <code className="text-xs">User</code>
-          -ID setzen.
+          Optional: set <code className="text-xs">SIMULATED_USER_ID</code> to a specific <code className="text-xs">User</code>{" "}
+          id.
         </CardContent>
       </Card>
     </main>

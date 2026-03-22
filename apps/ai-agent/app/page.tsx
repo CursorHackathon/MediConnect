@@ -13,7 +13,7 @@ export default function AiAgentPage() {
         </CardHeader>
         <CardContent className="space-y-4 text-sm text-muted-foreground">
           <p>
-            App Router API unter <code className="rounded bg-muted px-1">/api/v1/*</code> für Cloud Run.
+            App Router API at <code className="rounded bg-muted px-1">/api/v1/*</code> for Cloud Run.
           </p>
           <div className="flex flex-wrap gap-2">
             <Button asChild>

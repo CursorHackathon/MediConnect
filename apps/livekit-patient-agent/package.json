@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@livekit/agents": "1.2.0",
+    "@livekit/rtc-node": "0.13.24",
     "@livekit/agents-plugin-bey": "1.2.0",
     "@livekit/agents-plugin-elevenlabs": "1.2.0",
     "@livekit/agents-plugin-livekit": "1.2.0",

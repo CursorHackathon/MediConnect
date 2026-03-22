@@ -20,41 +20,44 @@ function stubSoap(input: SoapInput): SoapResult {
   const structured = {
     subjective:
       input.postCallNotes.trim() ||
-      "Patient schildert Beschwerden im Rahmen der Videosprechstunde; keine weiteren freitextlichen Angaben.",
+      "Patient reports concerns during the video visit; no additional free-text documentation.",
     objective:
-      "Videosprechstunde; keine körperliche Untersuchung vor Ort. Telemedizinischer Kontakt hergestellt.",
+      "Video visit; no in-person physical exam. Telemedicine contact established.",
     assessment:
       input.diagnoses[0] ??
-      (input.diagnoses.length ? input.diagnoses.join(", ") : "Bekannte Diagnosen fortführen; klinische Bewertung eingeschränkt ohne Präsenzuntersuchung."),
-    plan: "Wie in der Videosprechstunde besprochen. Bei Verschlechterung Hausarzt oder Notaufnahme aufsuchen.",
+      (input.diagnoses.length
+        ? input.diagnoses.join(", ")
+        : "Continue known diagnoses; clinical assessment limited without in-person exam."),
+    plan: "As discussed during the video visit. Worsening symptoms: contact PCP or emergency care.",
   };
   const summary = [
-    "**Subjektiv (S):** " + structured.subjective,
-    "**Objektiv (O):** " + structured.objective,
-    "**Beurteilung (A):** " + structured.assessment,
+    "**Subjective (S):** " + structured.subjective,
+    "**Objective (O):** " + structured.objective,
+    "**Assessment (A):** " + structured.assessment,
     "**Plan (P):** " + structured.plan,
   ].join("\n\n");
   return { summary, structured };
 }
 
-export async function generateSoapDeutsch(input: SoapInput): Promise<SoapResult> {
+/** Generates an English SOAP note (Claude if `ANTHROPIC_API_KEY` is set; otherwise stub). */
+export async function generateSoapNote(input: SoapInput): Promise<SoapResult> {
   const key = process.env.ANTHROPIC_API_KEY;
   if (!key) {
     return stubSoap(input);
   }
 
-  const prompt = `Du bist medizinischer Dokumentationsassistent für eine deutsche Praxis.
-Erstelle ein SOAP-Protokoll auf Deutsch (formell, prägnant).
+  const prompt = `You are a medical documentation assistant for a clinical practice.
+Write a concise, professional SOAP note in English.
 
 Patient: ${input.patientName}
-Bekannte Allergien: ${input.allergies.join(", ") || "keine Angaben"}
-Aktive Medikamente: ${input.medications.join("; ") || "keine Angaben"}
-Bekannte Diagnosen: ${input.diagnoses.join("; ") || "keine Angaben"}
+Known allergies: ${input.allergies.join(", ") || "not documented"}
+Active medications: ${input.medications.join("; ") || "not documented"}
+Known diagnoses: ${input.diagnoses.join("; ") || "not documented"}
 
-Freitext des Arztes zur Sprechstunde:
-${input.postCallNotes || "(keine Notizen)"}
+Clinician free text about the visit:
+${input.postCallNotes || "(no notes)"}
 
-Antworte NUR mit gültigem JSON in genau dieser Form, ohne Markdown:
+Reply ONLY with valid JSON in exactly this shape, no markdown:
 {"subjective":"...","objective":"...","assessment":"...","plan":"..."}`;
 
   const res = await fetch("https://api.anthropic.com/v1/messages", {
@@ -90,9 +93,9 @@ Antworte NUR mit gültigem JSON in genau dieser Form, ohne Markdown:
       plan: String(raw.plan ?? ""),
     };
     const summary = [
-      "**Subjektiv (S):** " + structured.subjective,
-      "**Objektiv (O):** " + structured.objective,
-      "**Beurteilung (A):** " + structured.assessment,
+      "**Subjective (S):** " + structured.subjective,
+      "**Objective (O):** " + structured.objective,
+      "**Assessment (A):** " + structured.assessment,
       "**Plan (P):** " + structured.plan,
     ].join("\n\n");
     return { summary, structured };

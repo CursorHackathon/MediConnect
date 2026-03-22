@@ -64,7 +64,7 @@ export function DoctorCallClient({ appointmentId }: { appointmentId: string }) {
       if (res.ok) {
         setSummary(await res.json());
       } else {
-        toast({ title: "Patientendaten", description: "Konnten nicht geladen werden.", variant: "destructive" });
+        toast({ title: "Patient data", description: "Could not be loaded.", variant: "destructive" });
       }
     })();
     void refreshStatus();
@@ -77,13 +77,13 @@ export function DoctorCallClient({ appointmentId }: { appointmentId: string }) {
     if (!res.ok) {
       const body = (await res.json().catch(() => null)) as { error?: string } | null;
       toast({
-        title: "Start fehlgeschlagen",
+        title: "Start failed",
         description: body?.error,
         variant: "destructive",
       });
       return;
     }
-    toast({ title: "Anruf gestartet" });
+    toast({ title: "Call started" });
     await refreshStatus();
   }
 
@@ -152,11 +152,11 @@ export function DoctorCallClient({ appointmentId }: { appointmentId: string }) {
     });
     setPendingComplete(false);
     if (!res.ok) {
-      toast({ title: "Speichern fehlgeschlagen", variant: "destructive" });
+      toast({ title: "Save failed", variant: "destructive" });
       return;
     }
     const data = await res.json();
-    toast({ title: "Gespräch beendet", description: data.soapSummary ? "SOAP gespeichert." : undefined });
+    toast({ title: "Visit ended", description: data.soapSummary ? "SOAP note saved." : undefined });
     setCompleteOpen(false);
     await refreshStatus();
   }
@@ -168,7 +168,7 @@ export function DoctorCallClient({ appointmentId }: { appointmentId: string }) {
       <div className="flex flex-1 flex-col gap-3">
         <div className="flex flex-wrap items-center gap-2">
           <Button asChild variant="ghost" size="sm">
-            <Link href="/doctor">Zurück</Link>
+            <Link href="/doctor">Back</Link>
           </Button>
           <Badge>{status?.status ?? "…"}</Badge>
         </div>
@@ -180,10 +180,10 @@ export function DoctorCallClient({ appointmentId }: { appointmentId: string }) {
             {!videoUrl ? (
               <div className="flex h-full flex-col items-center justify-center gap-4 rounded-md border border-dashed bg-muted/30 p-6 text-center">
                 <p className="text-sm text-muted-foreground">
-                  Starten Sie den Anruf, um den Raum zu öffnen. Der Patient sieht das Video erst nach Start.
+                  Start the call to open the room. The patient only sees video after you start.
                 </p>
                 <Button disabled={pendingStart} onClick={() => void onStart()}>
-                  {pendingStart ? "…" : "Anruf starten"}
+                  {pendingStart ? "…" : "Start call"}
                 </Button>
               </div>
             ) : (
@@ -198,7 +198,7 @@ export function DoctorCallClient({ appointmentId }: { appointmentId: string }) {
         </Card>
         <div className="flex gap-2">
           <Button disabled={!videoUrl || status?.callEndedAt != null} onClick={() => setCompleteOpen(true)} variant="destructive">
-            Gespräch beenden
+            End visit
           </Button>
         </div>
       </div>
@@ -211,13 +211,13 @@ export function DoctorCallClient({ appointmentId }: { appointmentId: string }) {
           <CardContent className="space-y-3 text-sm">
             <p className="font-medium">{summary?.patientName ?? "…"}</p>
             <div>
-              <p className="text-xs font-semibold uppercase text-muted-foreground">Allergien</p>
+              <p className="text-xs font-semibold uppercase text-muted-foreground">Allergies</p>
               <p className={summary?.allergies?.length ? "text-destructive" : ""}>
-                {summary?.allergies?.length ? summary.allergies.join(", ") : "Keine erfasst"}
+                {summary?.allergies?.length ? summary.allergies.join(", ") : "None recorded"}
               </p>
             </div>
             <div>
-              <p className="text-xs font-semibold uppercase text-muted-foreground">Medikamente</p>
+              <p className="text-xs font-semibold uppercase text-muted-foreground">Medications</p>
               <ul className="list-inside list-disc text-muted-foreground">
                 {(summary?.medications ?? []).map((m) => (
                   <li key={m.name + (m.dosage ?? "")}>
@@ -244,7 +244,7 @@ export function DoctorCallClient({ appointmentId }: { appointmentId: string }) {
 
         <Card>
           <CardHeader>
-            <CardTitle className="text-base">Krankenhaus-Wissensbasis</CardTitle>
+            <CardTitle className="text-base">Hospital knowledge base</CardTitle>
           </CardHeader>
           <CardContent className="space-y-2">
             <div className="flex gap-2">
@@ -255,7 +255,7 @@ export function DoctorCallClient({ appointmentId }: { appointmentId: string }) {
             </div>
             {kbSearchMode ? (
               <p className="text-[10px] uppercase text-muted-foreground">
-                Retrieval: {kbSearchMode === "semantic" ? "semantisch (Embeddings)" : "lexikalisch (Fallback)"}
+                Retrieval: {kbSearchMode === "semantic" ? "semantic (embeddings)" : "lexical (fallback)"}
               </p>
             ) : null}
             <div className="h-48 overflow-y-auto rounded-md border p-2">
@@ -269,7 +269,7 @@ export function DoctorCallClient({ appointmentId }: { appointmentId: string }) {
                         {c.source}
                         {c.score !== undefined ? (
                           <span className="ml-1 font-normal text-muted-foreground">
-                            ({(c.score * 100).toFixed(0)}% ähnlich)
+                            ({(c.score * 100).toFixed(0)}% match)
                           </span>
                         ) : null}
                       </p>
@@ -324,7 +324,7 @@ export function DoctorCallClient({ appointmentId }: { appointmentId: string }) {
       <Dialog onOpenChange={setCompleteOpen} open={completeOpen}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Gespräch abschließen</DialogTitle>
+            <DialogTitle>Complete visit</DialogTitle>
           </DialogHeader>
           <Textarea
             className="min-h-[120px]"
@@ -334,10 +334,10 @@ export function DoctorCallClient({ appointmentId }: { appointmentId: string }) {
           />
           <DialogFooter>
             <Button onClick={() => setCompleteOpen(false)} variant="ghost">
-              Abbrechen
+              Cancel
             </Button>
             <Button disabled={pendingComplete} onClick={() => void onComplete()}>
-              {pendingComplete ? "…" : "Speichern & SOAP"}
+              {pendingComplete ? "…" : "Save & SOAP"}
             </Button>
           </DialogFooter>
         </DialogContent>

@@ -38,7 +38,7 @@ export function PatientCallClient({ appointmentId }: { appointmentId: string }) 
     <div className="space-y-4">
       <div className="flex flex-wrap items-center gap-2">
         <Button asChild variant="ghost" size="sm">
-          <Link href="/patient">Zurück</Link>
+          <Link href="/patient">Back</Link>
         </Button>
         <Badge variant="outline">{status?.status ?? "…"}</Badge>
       </div>
@@ -46,11 +46,11 @@ export function PatientCallClient({ appointmentId }: { appointmentId: string }) 
       {!ready && !ended && (
         <Card>
           <CardHeader>
-            <CardTitle>Warteraum</CardTitle>
+            <CardTitle>Waiting room</CardTitle>
           </CardHeader>
           <CardContent className="space-y-2 text-sm text-muted-foreground">
-            <p>Bitte warten Sie, bis der Arzt den Anruf gestartet hat.</p>
-            <p className="text-xs">Diese Seite aktualisiert sich automatisch alle 3 Sekunden.</p>
+            <p>Please wait until the doctor has started the call.</p>
+            <p className="text-xs">This page refreshes automatically every 3 seconds.</p>
           </CardContent>
         </Card>
       )}
@@ -58,10 +58,10 @@ export function PatientCallClient({ appointmentId }: { appointmentId: string }) 
       {ended && (
         <Card>
           <CardHeader>
-            <CardTitle>Gespräch beendet</CardTitle>
+            <CardTitle>Visit ended</CardTitle>
           </CardHeader>
           <CardContent className="text-sm text-muted-foreground">
-            <p>Vielen Dank. Das Gespräch wurde beendet.</p>
+            <p>Thank you. The conversation has ended.</p>
           </CardContent>
         </Card>
       )}
@@ -69,7 +69,7 @@ export function PatientCallClient({ appointmentId }: { appointmentId: string }) 
       {ready && status.videoRoomUrl && (
         <Card className="overflow-hidden">
           <CardHeader className="pb-2">
-            <CardTitle className="text-base">Videosprechstunde</CardTitle>
+            <CardTitle className="text-base">Video visit</CardTitle>
           </CardHeader>
           <CardContent className="p-2 pt-0">
             <div className="h-[min(60vh,520px)] w-full">
@@ -77,7 +77,7 @@ export function PatientCallClient({ appointmentId }: { appointmentId: string }) 
                 allow="camera; microphone; fullscreen; display-capture"
                 className="h-full w-full rounded-md border bg-black"
                 src={status.videoRoomUrl}
-                title="Videosprechstunde"
+                title="Video visit"
               />
             </div>
           </CardContent>

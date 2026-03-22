@@ -13,7 +13,7 @@ export default async function AdminAreaPage() {
           <Badge variant="outline">{user?.role}</Badge>
         </CardHeader>
         <CardContent>
-          <p className="text-sm text-muted-foreground">RBAC und Nutzerverwaltung — Shell.</p>
+          <p className="text-sm text-muted-foreground">RBAC and user management — shell.</p>
         </CardContent>
       </Card>
     </main>

@@ -9,11 +9,11 @@ export default async function PatientAreaPage() {
     <main className="container py-12">
       <Card>
         <CardHeader className="flex flex-row items-center gap-2">
-          <CardTitle>Patientenbereich</CardTitle>
+          <CardTitle>Patient area</CardTitle>
           <Badge>{user?.role}</Badge>
         </CardHeader>
         <CardContent>
-          <p className="text-sm text-muted-foreground">Angemeldet als {user?.email}</p>
+          <p className="text-sm text-muted-foreground">Signed in as {user?.email}</p>
         </CardContent>
       </Card>
     </main>

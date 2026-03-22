@@ -8,7 +8,9 @@ import {
   defineAgent,
   inference,
   voice,
+  waitForTrackPublication,
 } from "@livekit/agents";
+import { TrackKind } from "@livekit/rtc-node";
 import * as bey from "@livekit/agents-plugin-bey";
 import * as elevenlabs from "@livekit/agents-plugin-elevenlabs";
 import * as livekit from "@livekit/agents-plugin-livekit";
@@ -42,6 +44,11 @@ if (!beyApiKey || !beyAvatarId) {
   );
 }
 
+/** Beyond Presence default (see LiveKit bey plugin docs). */
+const BEY_AVATAR_PARTICIPANT_IDENTITY = "bey-avatar-agent";
+/** Max time to wait for avatar video before greeting anyway. */
+const AVATAR_VIDEO_READY_TIMEOUT_MS = 60_000;
+
 export default defineAgent({
   prewarm: async (proc: JobProcess) => {
     proc.userData.vad = await silero.VAD.load();
@@ -71,6 +78,7 @@ export default defineAgent({
 
     await ctx.connect();
 
+    let beyAvatarStarted = false;
     if (beyApiKey && beyAvatarId) {
       try {
         const avatar = new bey.AvatarSession({
@@ -79,6 +87,7 @@ export default defineAgent({
           apiUrl: process.env.BEYOND_PRESENCE_API_URL,
         });
         await avatar.start(session, ctx.room);
+        beyAvatarStarted = true;
       } catch (avatarErr) {
         console.error("[mediconnect-patient-voice] Beyond Presence avatar failed to start:", avatarErr);
       }
@@ -92,9 +101,33 @@ export default defineAgent({
       outputOptions: useAvatar ? { audioEnabled: false } : {},
     });
 
+    if (beyAvatarStarted) {
+      try {
+        await Promise.race([
+          waitForTrackPublication({
+            room: ctx.room,
+            identity: BEY_AVATAR_PARTICIPANT_IDENTITY,
+            kind: TrackKind.KIND_VIDEO,
+          }),
+          new Promise<never>((_, reject) => {
+            setTimeout(
+              () => reject(new Error(`avatar video not published within ${AVATAR_VIDEO_READY_TIMEOUT_MS}ms`)),
+              AVATAR_VIDEO_READY_TIMEOUT_MS,
+            );
+          }),
+        ]);
+      } catch (waitErr) {
+        console.warn(
+          "[mediconnect-patient-voice] Avatar video not ready before greeting; speaking anyway:",
+          waitErr,
+        );
+      }
+    }
+
     session.generateReply({
       instructions:
         "Greet the patient briefly in one short sentence and offer to answer general health education questions.",
+      toolChoice: "none",
     });
   },
 });

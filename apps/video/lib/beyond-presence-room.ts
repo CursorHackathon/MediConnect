@@ -15,14 +15,14 @@ export type VideoRoomSuccess = {
 
 export type VideoRoomFailure = {
   ok: false;
-  /** Patient-/doctor-facing message (German), may include short API detail in English. */
+  /** Patient-/doctor-facing message; may include short API detail. */
   error: string;
 };
 
 export type VideoRoomResult = VideoRoomSuccess | VideoRoomFailure;
 
-const CONFIG_HINT_DE =
-  "Tragen Sie in der Server-.env ein: BEYOND_PRESENCE_API_KEY, BEYOND_PRESENCE_AVATAR_ID, LIVEKIT_URL (z. B. wss://….livekit.cloud) sowie LIVEKIT_API_KEY und LIVEKIT_API_SECRET (oder alternativ LIVEKIT_TOKEN statt Schlüssel/Secret).";
+const CONFIG_HINT =
+  "Configure the server environment: BEYOND_PRESENCE_API_KEY, BEYOND_PRESENCE_AVATAR_ID, LIVEKIT_URL (e.g. wss://….livekit.cloud), LIVEKIT_API_KEY and LIVEKIT_API_SECRET (or LIVEKIT_TOKEN instead of key/secret).";
 
 function summarizeBeyondPresenceErrorBody(raw: string): string {
   const t = raw.trim();
@@ -93,7 +93,7 @@ async function createVideoRoomForLiveKitName(roomName: string): Promise<VideoRoo
             livekitRoomName: roomName,
           };
         }
-        lastSessionError = { status: 200, detail: "JSON ohne url" };
+        lastSessionError = { status: 200, detail: "JSON response missing url" };
         if (process.env.NODE_ENV === "development") {
           console.warn("[video] Beyond Presence returned 2xx but JSON had no url:", data);
         }
@@ -172,7 +172,7 @@ async function createVideoRoomForLiveKitName(roomName: string): Promise<VideoRoo
   if (!primaryReady && !legacyReady) {
     return {
       ok: false,
-      error: `Beyond Presence ist nicht konfiguriert. ${CONFIG_HINT_DE}`,
+      error: `Beyond Presence is not configured. ${CONFIG_HINT}`,
     };
   }
 
@@ -180,7 +180,7 @@ async function createVideoRoomForLiveKitName(roomName: string): Promise<VideoRoo
     return {
       ok: false,
       error:
-        "Beyond Presence hat geantwortet, aber keine Video-URL geliefert. Prüfen Sie Avatar-ID und LiveKit-URL in der .env sowie die API-Antwort in den Server-Logs.",
+        "Beyond Presence responded but did not return a video URL. Check avatar ID and LiveKit URL in server configuration and the API response in server logs.",
     };
   }
 
@@ -194,7 +194,7 @@ async function createVideoRoomForLiveKitName(roomName: string): Promise<VideoRoo
 
   return {
     ok: false,
-    error: `Beyond-Presence-Sitzung konnte nicht erstellt werden (Netzwerk- oder Serverfehler). ${CONFIG_HINT_DE}`,
+    error: `Beyond Presence session could not be created (network or server error). ${CONFIG_HINT}`,
   };
 }
 

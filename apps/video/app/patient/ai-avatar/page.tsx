@@ -11,7 +11,7 @@ export default async function PatientAiAvatarPage() {
   }
 
   return (
-    <main className="container py-6">
+    <main className="w-full">
       <AiAvatarCallClient />
     </main>
   );

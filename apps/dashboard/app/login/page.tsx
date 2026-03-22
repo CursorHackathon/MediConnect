@@ -5,7 +5,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { AppHubNav, Button, Card, CardContent, CardHeader, CardTitle, Input } from "@mediconnect/ui";
 
-import { LanguageToggle, useTranslation } from "@/app/lib/i18n";
+import { useTranslation } from "@/app/lib/i18n";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -41,10 +41,7 @@ export default function LoginPage() {
       <AppHubNav current="dashboard" />
       <Card className="w-full max-w-sm">
         <CardHeader>
-          <div className="flex items-center justify-between">
-            <CardTitle className="text-xl">{t("login.title")}</CardTitle>
-            <LanguageToggle />
-          </div>
+          <CardTitle className="text-xl">{t("login.title")}</CardTitle>
           <p className="text-sm text-muted-foreground">
             {t("login.subtitle")}
           </p>

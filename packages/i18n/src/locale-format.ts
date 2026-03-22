@@ -1,6 +1,6 @@
 import type { Locale } from "./types";
 
-/** BCP 47 locale for `toLocaleString` / `Intl` based on app locale. */
-export function localeTag(locale: Locale): string {
-  return locale === "en" ? "en-GB" : "de-DE";
+/** BCP 47 tag for `toLocaleString` / `Intl` (English only). */
+export function localeTag(_locale: Locale): string {
+  return "en-GB";
 }

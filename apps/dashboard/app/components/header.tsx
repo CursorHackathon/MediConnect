@@ -3,7 +3,7 @@
 import { signOut, useSession } from "next-auth/react";
 import { AppHubNav, Button } from "@mediconnect/ui";
 
-import { LanguageToggle, useTranslation } from "@/app/lib/i18n";
+import { useTranslation } from "@/app/lib/i18n";
 
 export function Header() {
   const { data: session } = useSession();
@@ -15,7 +15,6 @@ export function Header() {
         <div className="flex h-12 items-center justify-between gap-4">
           <span className="shrink-0 font-semibold">{t("header.title")}</span>
           <div className="flex shrink-0 items-center gap-3">
-            <LanguageToggle />
             {session?.user?.name && (
               <span className="hidden text-sm text-muted-foreground sm:inline">{session.user.name}</span>
             )}

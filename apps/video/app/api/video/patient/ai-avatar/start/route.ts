@@ -30,8 +30,7 @@ export async function POST() {
   if (!lkUrl || !lkKey || !lkSecret) {
     return NextResponse.json(
       {
-        error:
-          "LiveKit ist nicht konfiguriert. Tragen Sie LIVEKIT_URL, LIVEKIT_API_KEY und LIVEKIT_API_SECRET in der .env ein.",
+        error: "Video consultation is temporarily unavailable. Please try again later.",
       },
       { status: 503 },
     );
@@ -45,7 +44,7 @@ export async function POST() {
   } catch (e) {
     console.error("[video] AI avatar agent dispatch failed:", e);
     return NextResponse.json(
-      { error: "KI-Agent konnte nicht gestartet werden. Läuft der Worker (pnpm livekit:patient-agent)?" },
+      { error: "The assistant is temporarily unavailable. Please try again shortly." },
       { status: 503 },
     );
   }
@@ -65,7 +64,7 @@ export async function POST() {
   } catch (e) {
     console.error("[video] Patient LiveKit token mint failed:", e);
     return NextResponse.json(
-      { error: "LiveKit-Teilnahme-Token konnte nicht erstellt werden." },
+      { error: "The session could not be started. Please try again." },
       { status: 503 },
     );
   }

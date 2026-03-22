@@ -19,35 +19,35 @@ export function KnowledgeUploadForm() {
     });
     setPending(false);
     if (!res.ok) {
-      toast({ title: "Upload fehlgeschlagen", variant: "destructive" });
+      toast({ title: "Upload failed", variant: "destructive" });
       return;
     }
     const data = (await res.json()) as { created: number };
-    toast({ title: "Gespeichert", description: `${data.created} Textabschnitte angelegt.` });
+    toast({ title: "Saved", description: `${data.created} text chunks created.` });
     setContent("");
   }
 
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Dokumenttext einfügen</CardTitle>
+        <CardTitle>Paste document text</CardTitle>
         <CardDescription>
-          Freitext wird in überlappende Abschnitte zerlegt und als Krankenhaus-Wissensbasis für die Videosprechstunde
-          indexiert (lexikalische Suche).
+          Free text is split into overlapping chunks and indexed for the hospital knowledge base used in video visits
+          (lexical search).
         </CardDescription>
       </CardHeader>
       <CardContent>
         <form className="space-y-4" onSubmit={(e) => void onSubmit(e)}>
-          <Input onChange={(e) => setTitle(e.target.value)} placeholder="Titel (optional)" value={title} />
+          <Input onChange={(e) => setTitle(e.target.value)} placeholder="Title (optional)" value={title} />
           <Textarea
             className="min-h-[200px]"
             onChange={(e) => setContent(e.target.value)}
-            placeholder="Protokolle, Formularien, interne Leitlinien…"
+            placeholder="Protocols, forms, internal guidelines…"
             required
             value={content}
           />
           <Button disabled={pending} type="submit">
-            {pending ? "…" : "Hochladen & chunken"}
+            {pending ? "…" : "Upload & chunk"}
           </Button>
         </form>
       </CardContent>

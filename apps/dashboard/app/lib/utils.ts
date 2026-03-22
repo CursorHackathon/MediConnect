@@ -1,6 +1,6 @@
 import type { VaccinationStatus } from "@prisma/client";
 
-export function formatDateDE(date: Date | string | null | undefined, locale: string = "de"): string {
+export function formatDateDE(date: Date | string | null | undefined, locale: string = "en"): string {
   if (!date) return "—";
   const d = typeof date === "string" ? new Date(date) : date;
   const loc = locale === "en" ? "en-GB" : "de-DE";

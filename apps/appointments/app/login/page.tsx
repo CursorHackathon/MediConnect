@@ -1,6 +1,6 @@
 "use client";
 
-import { LanguageToggle, useTranslation } from "@mediconnect/i18n";
+import { useTranslation } from "@mediconnect/i18n";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -32,10 +32,7 @@ export default function LoginPage() {
       <AppHubNav current="appointments" />
       <Card className="w-full max-w-sm">
         <CardHeader>
-          <div className="flex items-center justify-between gap-2">
-            <CardTitle>{t("appt.login.title")}</CardTitle>
-            <LanguageToggle />
-          </div>
+          <CardTitle>{t("appt.login.title")}</CardTitle>
           <p className="text-sm text-muted-foreground">{t("appt.login.subtitle")}</p>
         </CardHeader>
         <CardContent>

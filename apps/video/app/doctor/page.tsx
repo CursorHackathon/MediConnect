@@ -29,17 +29,17 @@ export default async function DoctorVideoHubPage() {
   return (
     <main className="container space-y-6 py-10">
       <div className="flex items-center gap-2">
-        <h1 className="text-2xl font-semibold">Videosprechstunde — Arzt</h1>
+        <h1 className="text-2xl font-semibold">Video visit — Doctor</h1>
         <Badge variant="outline">E1</Badge>
       </div>
       <Card>
         <CardHeader>
-          <CardTitle>Termine</CardTitle>
-          <CardDescription>Wählen Sie einen Termin, um den Anruf zu starten.</CardDescription>
+          <CardTitle>Appointments</CardTitle>
+          <CardDescription>Select an appointment to start the call.</CardDescription>
         </CardHeader>
         <CardContent className="space-y-3">
           {appointments.length === 0 ? (
-            <p className="text-sm text-muted-foreground">Keine Termine gefunden.</p>
+            <p className="text-sm text-muted-foreground">No appointments found.</p>
           ) : (
             <ul className="space-y-2">
               {appointments.map((a) => (
@@ -47,11 +47,11 @@ export default async function DoctorVideoHubPage() {
                   <div>
                     <p className="font-medium">{a.patient.user.name ?? "Patient"}</p>
                     <p className="text-xs text-muted-foreground">
-                      {a.startsAt.toLocaleString("de-DE")} · {a.status}
+                      {a.startsAt.toLocaleString("en-US")} · {a.status}
                     </p>
                   </div>
                   <Button asChild size="sm">
-                    <Link href={`/doctor/appointments/${a.id}/call`}>Zum Gespräch</Link>
+                    <Link href={`/doctor/appointments/${a.id}/call`}>Open visit</Link>
                   </Button>
                 </li>
               ))}

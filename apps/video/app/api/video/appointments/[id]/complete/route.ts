@@ -4,7 +4,7 @@ import { getCurrentUser } from "@mediconnect/auth";
 import { prisma } from "@mediconnect/db";
 
 import { loadAppointmentForVideo } from "../../../../../../lib/appointment-access";
-import { generateSoapDeutsch } from "../../../../../../lib/soap-generate";
+import { generateSoapNote } from "../../../../../../lib/soap-generate";
 import { AppointmentStatus } from "../../../../../../lib/statuses";
 
 type Ctx = { params: Promise<{ id: string }> };
@@ -46,7 +46,7 @@ export async function POST(req: Request, ctx: Ctx) {
   let soapStructured: object | null = null;
 
   if (generateSoap && patient) {
-    const soap = await generateSoapDeutsch({
+    const soap = await generateSoapNote({
       patientName: patient.user.name ?? "Patient",
       allergies: asStringArray(patient.allergies),
       medications: patient.medications.map((m) =>
