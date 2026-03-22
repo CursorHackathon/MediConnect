@@ -9,7 +9,9 @@
     "test": "turbo test",
     "db:push": "turbo db:push",
     "db:migrate": "turbo db:migrate",
-    "db:seed": "turbo db:seed"
+    "db:seed": "turbo db:seed",
+    "seed:patient-kb": "pnpm --filter @mediconnect/knowledge-base seed-patient-education",
+    "livekit:patient-agent": "pnpm --filter @mediconnect/livekit-patient-agent dev"
   },
   "devDependencies": {
     "turbo": "^2.3.3",

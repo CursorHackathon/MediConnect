@@ -144,9 +144,9 @@ External services
 | Data fetching | React Query | Queue polling, caching, background refetch |
 | ORM | Prisma | Type-safe DB access, migrations |
 | Database | PostgreSQL 15 + pgvector | Relations + vector search for RAG |
-| Auth | NextAuth.js | Sessions with role field, Google OAuth |
+| Auth | Simulated role (`SIMULATED_ROLE` / `SIMULATED_USER_ID`) | Dev/demo; maps to seeded DB users |
 | AI | Claude API (Anthropic) | Doctor agent, SOAP summaries, triage |
-| Embeddings | OpenAI text-embedding-ada-002 | RAG document embeddings |
+| Embeddings | Hugging Face Inference (BGE-large-en-v1.5) | RAG document embeddings |
 | Voice | ElevenLabs TTS | Doctor agent read-aloud |
 | Video | beyondPresence SDK | GDPR-compliant video rooms |
 | Calendar | Google Calendar API via MCP | Appointment sync |
@@ -165,7 +165,7 @@ External services
 ```
 mediconnect/
 ├── apps/
-│   ├── web/                # Shell app — layout, auth pages, role-based routing
+│   ├── web/                # Shell app — layout, role-based routing (simulated role)
 │   ├── video/              # E1: Video consultation
 │   ├── dashboard/          # E2: Medical dashboard
 │   ├── appointments/       # E3: Appointments and queue
@@ -180,12 +180,11 @@ mediconnect/
 │   └── knowledge-base/     # RAG helpers, medical API clients
 ├── infra/
 │   ├── terraform/          # GCP infrastructure as code
-│   ├── docker/             # Dockerfiles for Cloud Run services
+│   ├── docker/             # Local dev: docker-compose (Postgres+pgvector, Redis, MinIO, Mailhog)
 │   └── scripts/            # Deployment and env-check scripts
 ├── .github/
 │   ├── workflows/          # GitHub Actions CI/CD pipeline
 │   └── CODEOWNERS          # Auto-assigns reviewers by folder
-├── docker-compose.yml      # Local dev services (Postgres, Redis, MinIO, Mailhog)
 ├── turbo.json              # Turborepo pipeline config
 ├── pnpm-workspace.yaml     # pnpm workspace roots
 └── .env.example            # All required environment variables
@@ -296,7 +295,7 @@ You also need accounts (all free at the dev tier) for:
 
 - [Supabase](https://supabase.com) — PostgreSQL + pgvector
 - [Anthropic](https://console.anthropic.com) — Claude API key
-- [OpenAI](https://platform.openai.com) — embeddings API key
+- [Hugging Face](https://huggingface.co/settings/tokens) — Inference API token for embeddings
 - [ElevenLabs](https://elevenlabs.io) — TTS API key
 - [beyondPresence](https://beyondpresence.io) — video API key
 - [NCBI](https://www.ncbi.nlm.nih.gov/account/) — PubMed API key (free)
@@ -321,11 +320,12 @@ pnpm install
 cp .env.example .env.local
 # Open .env.local and fill in your API keys (see Environment variables section)
 
-# 4. Start local backing services
-docker compose up -d
+# 4. Start local backing services (Postgres + pgvector, Redis, MinIO, Mailhog)
+cp infra/docker/.env.example infra/docker/.env
+docker compose -f infra/docker/docker-compose.yml up -d
 ```
 
-Docker Compose starts four services:
+Docker Compose starts four core services (see `infra/docker/docker-compose.yml`):
 
 | Service | Port | Purpose |
 |---|---|---|
@@ -336,9 +336,11 @@ Docker Compose starts four services:
 
 Open [http://localhost:8025](http://localhost:8025) to see emails. Open [http://localhost:9001](http://localhost:9001) to browse files in MinIO (user: `minioadmin`, password: `minioadmin`).
 
+**RAG / embeddings:** Use **Hugging Face Inference** (`feature-extraction` on `hf-inference`, default model `BAAI/bge-large-en-v1.5`): set `HUGGINGFACE_API_TOKEN` or `HF_TOKEN`, and optionally `HF_EMBEDDING_MODEL` / `EMBEDDING_DIMENSIONS` (see `.env.example`). Verify the token with `pnpm --filter @mediconnect/knowledge-base test:hf` (or `pnpm test --filter=@mediconnect/knowledge-base`, which loads root `.env` and runs integration tests when a token is present). For Featherless chat (default `Qwen/Qwen3-14B`), set `LLM_BASE_URL`, `LLM_API_KEY`, and `LLM_MODEL`. Try the KB demo UI: `pnpm dev --filter=@mediconnect/ai-agent` → [http://localhost:3004/chat](http://localhost:3004/chat). Run `pnpm db:migrate` so `KnowledgeChunk.embeddingVector` exists (use `prisma migrate resolve` / baseline if the DB was created earlier with `db:push`). Chunks that still lack vectors can be embedded via `POST /api/admin/knowledge/backfill-embeddings` (admin session, optional JSON body `{ "limit": 32 }`).
+
 ```bash
 # 5. Apply the database schema
-pnpm db:push
+pnpm db:migrate
 
 # 6. Seed demo users and sample data
 pnpm db:seed
@@ -359,9 +361,9 @@ Copy `.env.example` to `.env.local` and fill in each value. Here is what each on
 # Database
 DATABASE_URL              # PostgreSQL connection string (local: see docker-compose.yml)
 
-# Auth
-NEXTAUTH_SECRET           # Random secret — generate with: openssl rand -base64 32
-NEXTAUTH_URL              # http://localhost:3000 for local dev
+# Auth (simulation)
+SIMULATED_ROLE            # PATIENT | DOCTOR | ADMIN — first DB user with that role (see seed)
+SIMULATED_USER_ID         # Optional — explicit Prisma User.id
 
 # Google OAuth (Calendar + Gmail MCP)
 GOOGLE_CLIENT_ID          # From GCP Console → APIs & Services → Credentials
