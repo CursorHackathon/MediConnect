@@ -58,7 +58,6 @@ export default function LoginPage() {
               {loading ? t("login.loading") : t("appt.login.submit")}
             </Button>
           </form>
-          <p className="mt-4 text-xs text-muted-foreground">{t("appt.login.demo")}</p>
         </CardContent>
       </Card>
     </main>

@@ -19,6 +19,10 @@ const standaloneDocker =
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   ...standaloneDocker,
+  experimental: {
+    ...(standaloneDocker.experimental || {}),
+    serverComponentsExternalPackages: ["@prisma/client"],
+  },
   transpilePackages: [
     "@mediconnect/ui",
     "@mediconnect/types",

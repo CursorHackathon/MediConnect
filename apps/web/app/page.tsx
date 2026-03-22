@@ -12,7 +12,7 @@ export default function HomePage() {
         </p>
         <div className="mt-4">
           <p className="mb-2 text-sm font-medium text-foreground">Alle Anwendungen</p>
-          <AppHubNav current="web" />
+          <AppHubNav />
         </div>
       </div>
       <div className="grid gap-4 md:grid-cols-2">

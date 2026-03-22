@@ -81,13 +81,6 @@ export default function LoginPage() {
               {loading ? t("login.loading") : t("login.submit")}
             </Button>
           </form>
-          <div className="mt-4 rounded-md bg-muted p-3 text-xs text-muted-foreground">
-            <p className="font-medium">{t("login.demo")}</p>
-            <p>{t("login.demo_doctor")}: doctor@mediconnect.local</p>
-            <p>{t("login.demo_patient")}: patient@mediconnect.local</p>
-            <p>{t("login.demo_nurse")}: nurse@mediconnect.local</p>
-            <p>{t("login.demo_password")}: mediconnect-dev</p>
-          </div>
         </CardContent>
       </Card>
     </main>

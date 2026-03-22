@@ -9,6 +9,9 @@ export const metadata: Metadata = {
   description: "E5 — RBAC, users, medications",
 };
 
+/** Admin UI and APIs use Prisma; skip static prerender so `next build` works in Docker without DB. */
+export const dynamic = "force-dynamic";
+
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="de">

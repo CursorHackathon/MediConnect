@@ -5,6 +5,8 @@ import { prisma, setKnowledgeChunkEmbeddingVector } from "@mediconnect/db";
 import { embedDocumentTexts, splitTextIntoChunks } from "@mediconnect/knowledge-base";
 import { Role } from "@prisma/client";
 
+export const dynamic = "force-dynamic";
+
 export async function POST(req: Request) {
   const denied = await requireRole(Role.ADMIN);
   if (denied) return denied;

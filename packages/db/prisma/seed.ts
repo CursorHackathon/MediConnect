@@ -16,11 +16,12 @@ async function main() {
   // ─── Admin ────────────────────────────────────────
   await prisma.user.upsert({
     where: { email: "admin@mediconnect.local" },
-    update: { name: "Admin User", role: Role.ADMIN },
+    update: { passwordHash, name: "Admin User", role: Role.ADMIN },
     create: {
       email: "admin@mediconnect.local",
       name: "Admin User",
       role: Role.ADMIN,
+      passwordHash,
     },
   });
 
@@ -32,6 +33,7 @@ async function main() {
       email: "doctor@mediconnect.local",
       name: "Dr. Mueller",
       role: Role.DOCTOR,
+      passwordHash,
     },
   });
 
@@ -67,6 +69,7 @@ async function main() {
       email: "patient@mediconnect.local",
       name: "Max Weber",
       role: Role.PATIENT,
+      passwordHash,
     },
   });
 

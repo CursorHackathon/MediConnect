@@ -14,6 +14,11 @@ const standaloneDocker =
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   ...standaloneDocker,
+  experimental: {
+    ...(standaloneDocker.experimental || {}),
+    // Avoid bundling Prisma so DATABASE_URL is not inlined from the Docker build stage (127.0.0.1).
+    serverComponentsExternalPackages: ["@prisma/client"],
+  },
   transpilePackages: [
     "@mediconnect/ui",
     "@mediconnect/types",

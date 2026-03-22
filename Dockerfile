@@ -27,8 +27,14 @@ ENV NEXT_PUBLIC_URL_APPOINTMENTS=$NEXT_PUBLIC_URL_APPOINTMENTS
 ENV NEXT_PUBLIC_URL_AI_AGENT=$NEXT_PUBLIC_URL_AI_AGENT
 ENV NEXT_PUBLIC_URL_ADMIN=$NEXT_PUBLIC_URL_ADMIN
 
-# Satisfies Prisma during install / tooling; runtime DATABASE_URL comes from Compose.
-ENV DATABASE_URL=postgresql://mediconnect:mediconnect@127.0.0.1:5432/mediconnect
+# Prisma install/build need a URL string. Use the same host as docker-compose (`postgres` service name).
+# If Next/Webpack inlines DATABASE_URL at build time, 127.0.0.1 breaks login inside the container (wrong DB).
+ENV DATABASE_URL=postgresql://mediconnect:mediconnect@postgres:5432/mediconnect
+
+# Prisma engines: detect OpenSSL. onnxruntime-node (via @huggingface/transformers / LiveKit): skip optional CUDA
+# binary download — it 404s in many CI/Docker environments and is not needed for the Next.js apps here.
+RUN apt-get update && apt-get install -y openssl ca-certificates && rm -rf /var/lib/apt/lists/*
+ENV ONNXRUNTIME_NODE_INSTALL_CUDA=skip
 
 RUN pnpm install --frozen-lockfile
 RUN pnpm turbo run build --filter="${TURBO_FILTER}..."

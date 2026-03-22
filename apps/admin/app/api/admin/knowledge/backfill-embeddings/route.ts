@@ -7,6 +7,8 @@ import { Role } from "@prisma/client";
 
 const DEFAULT_LIMIT = 32;
 
+export const dynamic = "force-dynamic";
+
 /**
  * Admin-only: embed chunks that have no pgvector row yet (e.g. uploaded before embeddings were configured).
  */

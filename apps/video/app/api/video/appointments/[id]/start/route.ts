@@ -35,7 +35,7 @@ export async function POST(_req: Request, ctx: Ctx) {
       videoRoomUrl: url,
       videoSessionId: sessionId,
       callStartedAt: new Date(),
-      status: AppointmentStatus.IN_CALL,
+      status: AppointmentStatus.IN_PROGRESS,
     },
     select: {
       videoRoomUrl: true,

@@ -135,7 +135,13 @@ async function formatPatientClinicalSummary(
       patient: {
         include: {
           medicalHistories: { orderBy: { updatedAt: "desc" }, take: 25 },
-          medications: { orderBy: { updatedAt: "desc" }, take: 40 },
+          medications: {
+            orderBy: { updatedAt: "desc" },
+            take: 40,
+            include: {
+              prescribedBy: { include: { user: { select: { name: true } } } },
+            },
+          },
           vaccinations: { orderBy: { updatedAt: "desc" }, take: 20 },
         },
       },
@@ -193,8 +199,9 @@ async function formatPatientClinicalSummary(
   if (p.medications.length === 0) lines.push("- None recorded");
   else {
     for (const med of p.medications) {
+      const prescriber = med.prescribedBy?.user?.name;
       lines.push(
-        `- ${med.name}${med.dosage ? ` ${med.dosage}` : ""}${med.frequency ? `, ${med.frequency}` : ""}${med.prescribedBy ? ` (by ${med.prescribedBy})` : ""}`,
+        `- ${med.name}${med.dosage ? ` ${med.dosage}` : ""}${med.frequency ? `, ${med.frequency}` : ""}${prescriber ? ` (by ${prescriber})` : ""}`,
       );
     }
   }

@@ -2,12 +2,11 @@
 
 import { Button } from "./components/ui/button";
 
-export type AppHubId = "web" | "video" | "dashboard" | "appointments" | "aiAgent" | "admin";
+export type AppHubId = "video" | "dashboard" | "appointments" | "aiAgent" | "admin";
 
 /** Base URLs for each Next.js app (browser must reach host + published port). */
 export function getAppHubUrls(): Record<AppHubId, string> {
   return {
-    web: process.env.NEXT_PUBLIC_URL_WEB ?? "http://localhost:3000",
     video: process.env.NEXT_PUBLIC_URL_VIDEO ?? "http://localhost:3001",
     dashboard: process.env.NEXT_PUBLIC_URL_DASHBOARD ?? "http://localhost:3002",
     appointments: process.env.NEXT_PUBLIC_URL_APPOINTMENTS ?? "http://localhost:3003",
@@ -17,7 +16,6 @@ export function getAppHubUrls(): Record<AppHubId, string> {
 }
 
 const LABELS: Record<AppHubId, string> = {
-  web: "Portal",
   video: "Video",
   dashboard: "Dashboard",
   appointments: "Appointments",
@@ -25,7 +23,7 @@ const LABELS: Record<AppHubId, string> = {
   admin: "Admin",
 };
 
-const ORDER: AppHubId[] = ["web", "dashboard", "video", "appointments", "aiAgent", "admin"];
+const ORDER: AppHubId[] = ["dashboard", "video", "appointments", "aiAgent", "admin"];
 
 export function AppHubNav({
   current,

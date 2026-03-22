@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth/next";
 
-import { authOptions } from "@mediconnect/auth";
+import { authOptions } from "@/app/lib/auth-options";
 import { prisma } from "@mediconnect/db";
 
 export async function GET() {

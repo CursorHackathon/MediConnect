@@ -1,7 +1,7 @@
 import { getServerSession } from "next-auth/next";
 import { NextResponse } from "next/server";
 
-import { authOptions } from "@mediconnect/auth";
+import { authOptions } from "@/app/lib/auth-options";
 import { prisma } from "@mediconnect/db";
 
 export type AuthContext = {

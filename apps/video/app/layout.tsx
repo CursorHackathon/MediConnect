@@ -10,6 +10,9 @@ export const metadata: Metadata = {
   description: "E1 — Video consultation",
 };
 
+/** Simulated auth + Prisma run on every request; no static prerender (also fixes `next build` in Docker without DB). */
+export const dynamic = "force-dynamic";
+
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="de">

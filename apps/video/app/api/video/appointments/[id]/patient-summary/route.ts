@@ -31,7 +31,13 @@ export async function GET(_req: Request, ctx: Ctx) {
     where: { id: gate.appointment.patientId },
     include: {
       user: true,
-      medications: { orderBy: { createdAt: "desc" }, take: 20 },
+      medications: {
+        orderBy: { createdAt: "desc" },
+        take: 20,
+        include: {
+          prescribedBy: { include: { user: { select: { name: true } } } },
+        },
+      },
       medicalHistories: { orderBy: { diagnosedAt: "desc" }, take: 10 },
     },
   });
@@ -47,7 +53,9 @@ export async function GET(_req: Request, ctx: Ctx) {
       name: m.name,
       dosage: m.dosage,
       frequency: m.frequency,
-      prescribedBy: m.prescribedBy,
+      prescribedBy: m.prescribedBy
+        ? { id: m.prescribedBy.id, name: m.prescribedBy.user.name }
+        : null,
     })),
     diagnoses: patient.medicalHistories.map((h) => ({
       condition: h.condition,
