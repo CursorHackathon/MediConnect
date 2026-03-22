@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 
+import { AppHubNav } from "@mediconnect/ui";
+
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -10,7 +12,14 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="de">
-      <body className="min-h-screen antialiased">{children}</body>
+      <body className="min-h-screen antialiased">
+        <div className="border-b bg-muted/40">
+          <div className="container py-2">
+            <AppHubNav current="admin" />
+          </div>
+        </div>
+        {children}
+      </body>
     </html>
   );
 }

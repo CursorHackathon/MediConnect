@@ -16,6 +16,7 @@
     "db:push": "dotenv -e ../../.env -e .env -- prisma db push",
     "db:migrate": "dotenv -e ../../.env -e .env -- prisma migrate deploy",
     "db:migrate:dev": "dotenv -e ../../.env -e .env -- prisma migrate dev",
+    "db:reset": "dotenv -e ../../.env -e .env -- prisma migrate reset",
     "db:seed": "dotenv -e ../../.env -e .env -- tsx prisma/seed.ts",
     "db:studio": "dotenv -e ../../.env -e .env -- prisma studio"
   },

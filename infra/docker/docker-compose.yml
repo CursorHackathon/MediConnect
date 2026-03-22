@@ -21,8 +21,12 @@
 #   postgresql://mediconnect:mediconnect@localhost:5432/mediconnect
 #
 # MinIO console: http://localhost:9001  ·  Mailhog UI: http://localhost:8025
+#
+# Docker Desktop (Windows): if `docker compose` fails with 500 on
+# `dockerDesktopLinuxEngine/.../images/.../json`, restart Docker Desktop
+# (Quit fully → start again), then `docker compose pull` and retry.
 
-name: mediconnect-infra
+# Optional: COMPOSE_PROJECT_NAME=mediconnect-infra when running only this file from infra/docker.
 
 # Pass variables from infra/docker/.env into containers (optional file).
 x-env-files: &env-files
@@ -70,7 +74,7 @@ services:
 
   minio:
     <<: *env-files
-    image: minio/minio:latest
+    image: minio/minio:RELEASE.2025-09-07T16-13-09Z
     container_name: mediconnect-minio
     restart: unless-stopped
     command: server /data --console-address ":9001"
@@ -85,7 +89,7 @@ services:
 
   mailhog:
     <<: *env-files
-    image: mailhog/mailhog:latest
+    image: mailhog/mailhog:v1.0.1
     container_name: mediconnect-mailhog
     restart: unless-stopped
     ports:

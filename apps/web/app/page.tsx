@@ -1,6 +1,6 @@
 import Link from "next/link";
 
-import { Button, Card, CardContent, CardDescription, CardHeader, CardTitle } from "@mediconnect/ui";
+import { AppHubNav, Button, Card, CardContent, CardDescription, CardHeader, CardTitle } from "@mediconnect/ui";
 
 export default function HomePage() {
   return (
@@ -10,6 +10,10 @@ export default function HomePage() {
         <p className="text-muted-foreground">
           Telehealth platform shell — rollenbasierter Zugang per <code className="text-xs">SIMULATED_ROLE</code> (lokal).
         </p>
+        <div className="mt-4">
+          <p className="mb-2 text-sm font-medium text-foreground">Alle Anwendungen</p>
+          <AppHubNav current="web" />
+        </div>
       </div>
       <div className="grid gap-4 md:grid-cols-2">
         <Card>

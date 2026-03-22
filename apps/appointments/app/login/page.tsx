@@ -4,7 +4,7 @@ import { LanguageToggle, useTranslation } from "@mediconnect/i18n";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { Button, Card, CardContent, CardHeader, CardTitle, Input } from "@mediconnect/ui";
+import { AppHubNav, Button, Card, CardContent, CardHeader, CardTitle, Input } from "@mediconnect/ui";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -28,7 +28,8 @@ export default function LoginPage() {
   }
 
   return (
-    <main className="flex min-h-screen items-center justify-center p-4">
+    <main className="flex min-h-screen flex-col items-center justify-center gap-4 p-4">
+      <AppHubNav current="appointments" />
       <Card className="w-full max-w-sm">
         <CardHeader>
           <div className="flex items-center justify-between gap-2">

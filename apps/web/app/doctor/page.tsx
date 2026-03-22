@@ -1,6 +1,8 @@
 import { getCurrentUser } from "@mediconnect/auth";
 import { Badge, Card, CardContent, CardHeader, CardTitle } from "@mediconnect/ui";
 
+export const dynamic = "force-dynamic";
+
 export default async function DoctorAreaPage() {
   const user = await getCurrentUser();
   return (

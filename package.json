@@ -9,11 +9,17 @@
     "test": "turbo test",
     "db:push": "turbo db:push",
     "db:migrate": "turbo db:migrate",
-    "db:seed": "turbo db:seed",
+    "db:reset": "pnpm --filter @mediconnect/db db:reset",
+    "db:seed": "pnpm --filter @mediconnect/db db:seed",
+    "prisma": "dotenv -e ./.env -e ./packages/db/.env -- pnpm --filter @mediconnect/db exec prisma",
     "seed:patient-kb": "pnpm --filter @mediconnect/knowledge-base seed-patient-education",
-    "livekit:patient-agent": "pnpm --filter @mediconnect/livekit-patient-agent dev"
+    "livekit:patient-agent": "pnpm --filter @mediconnect/livekit-patient-agent dev",
+    "docker:build": "docker compose build web && docker compose build video && docker compose build dashboard && docker compose build appointments && docker compose build ai-agent && docker compose build admin",
+    "docker:up": "docker compose build web && docker compose build video && docker compose build dashboard && docker compose build appointments && docker compose build ai-agent && docker compose build admin && docker compose up -d",
+    "docker:down": "docker compose down"
   },
   "devDependencies": {
+    "dotenv-cli": "^11.0.0",
     "turbo": "^2.3.3",
     "typescript": "^5.7.2"
   },

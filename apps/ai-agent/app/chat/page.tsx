@@ -2,7 +2,7 @@ import Link from "next/link";
 
 import { getCurrentUser } from "@mediconnect/auth";
 import { Role } from "@prisma/client";
-import { Button } from "@mediconnect/ui";
+import { AppHubNav, Button } from "@mediconnect/ui";
 
 import { KbChatClient } from "./kb-chat-client";
 
@@ -16,7 +16,8 @@ export default async function ChatPage() {
 
   if (!allowed) {
     return (
-      <main className="container max-w-lg py-16 text-center">
+      <main className="container max-w-lg space-y-6 py-16 text-center">
+        <AppHubNav current="aiAgent" className="[&_ul]:justify-center" />
         <h1 className="mb-2 text-xl font-semibold text-foreground">Doctor or admin access required</h1>
         <p className="mb-6 text-sm text-muted-foreground">
           This assistant uses hospital knowledge search and optional patient chart tools. For local dev, set{" "}
@@ -33,6 +34,7 @@ export default async function ChatPage() {
 
   return (
     <main className="container max-w-3xl py-8">
+      <AppHubNav current="aiAgent" className="mb-4" />
       <div className="mb-4 flex items-center gap-2">
         <Button asChild size="sm" variant="ghost">
           <Link href="/">← Home</Link>
